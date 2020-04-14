@@ -1,0 +1,45 @@
+version: '3.3'
+
+services:
+
+  uaptn-portal-mysql:
+    image: mysql:5.6.42
+    volumes: 
+      - ../mysql/data/:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=uaptn123!!!
+    networks:
+      - uaptn-network
+  uaptn-portal-portald:
+    image: registry.github.com/uaptn/uaptn:portald-develop
+    restart: always
+    environment:
+      - database-host: "uaptn-portal-mysql"
+      - database-password: "uaptn123!!!"
+    ports:
+       - "5432:5432"
+    networks:
+      - uaptn-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_etc:/etc/postgresql
+  uaptn-portal-trackerd:
+    image: registry.github.com/uaptn/uaptn:trackerd-develop
+    restart: always
+    ports: 
+     - 8081:8081
+    networks:
+      - uaptn-network
+  uaptn-portal-ui:
+    image: registry.github.com/uaptn/portal-ui:develop
+    restart: always
+    ports: 
+     - 8080:8080
+    networks:
+      - uaptn-network
+networks:
+  uaptn-network:
+volumes:
+  uaptn-portal-mysql:

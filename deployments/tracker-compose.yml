@@ -1,0 +1,131 @@
+version: '3.3'
+
+# /uaptn - root folder
+# /uaptn/db - database folder for tracker
+# /uaptn/data - other data folder
+# /uaptn/etc - configuration folder
+
+services:
+  uaptn-tracker:
+    container_name: uaptn-tracker
+    image: uaptn/tracker:develop
+    restart: always
+    networks:
+      - uaptn-network
+    environment:
+      upload-server-addr: trackerapi-dev.uaptn.com:443
+      trackerd-server-addr: trackerapi-dev.uaptn.com:443
+      gpsd-addr: uaptn-gpsd:2947
+    volumes:
+      - type: volume
+        source: uaptn-data
+        target: /uaptn/data
+        volume:
+          nocopy: true
+      - type: volume
+        source: uaptn-db
+        target: /uaptn/db
+        volume:
+          nocopy: true          
+      - type: volume
+        source: uaptn-etc
+        target: /uaptn/etc
+        volume:
+          nocopy: true          
+  uaptn-tracker-ui-backend:
+    container_name: uaptn-tracker-backend
+    image: uaptn/tracker-ui-backend:develop
+    restart: always
+    ports: 
+     - 8088:8088
+    networks:
+      - uaptn-network
+    volumes:
+      - type: volume
+        source: uaptn-data
+        target: /uaptn/data
+        volume:
+          nocopy: true
+      - type: volume
+        source: uaptn-db
+        target: /uaptn/db
+        volume:
+          nocopy: true          
+      - type: volume
+        source: uaptn-etc
+        target: /uaptn/etc
+        volume:
+          nocopy: true          
+  uaptn-tracker-ui:
+    container_name: uaptn-tracker-ui
+    image: uaptn/tracker-ui:develop
+    restart: always
+    ports: 
+     - 80:80
+    networks:
+      - uaptn-network
+    volumes:
+      - type: volume
+        source: uaptn-data
+        target: /uaptn/data
+        volume:
+          nocopy: true
+      - type: volume
+        source: uaptn-db
+        target: /uaptn/db
+        volume:
+          nocopy: true
+      - type: volume
+        source: uaptn-etc
+        target: /uaptn/etc
+        volume:
+          nocopy: true
+  uaptn-gpsd:
+    container_name: uaptn-gpsd
+    image: uaptn/gpsd:develop
+    restart: always
+    networks:
+      - uaptn-network
+    privileged: true
+    devices:
+      - /dev/ttyAMA0:/dev/ttyAMA0 
+      - /dev/ttyACM0:/dev/ttyACM0 
+    command: -D2 /dev/ttyACM0 
+networks:
+  uaptn-network:
+volumes:
+  uaptn-data:
+  uaptn-db:
+  uaptn-etc:
+
+# TRACKER
+# Usage of /app/tracker:
+#   -config-file string
+#     	path to config file (default "/uaptn/etc/tracker.yml")
+#   -data-path string
+#     	path to data directory (default "/uaptn/data")
+#   -db-path string
+#     	path to database file (default "/uaptn/db/tracker.db")
+#   -debug
+#     	Enable debugging
+#   -trackerd-server-addr string
+#     	Trackerd server address (default "localhost:8088")
+#   -upload-server-addr string
+#     	Upload server address (default "localhost:8090")
+
+# TRACKER UI BACKEND
+# Usage of cmd/bin/amd64/darwin/tracker-ui-backend:
+#   -db-path string
+#         Path to sqlite db (default "/uaptn/db/tracker.db")
+#   -frontend-enabled
+#         Enable / Disable the http frontend (default true)
+#   -frontend-grpc-port int
+#         Port for the for the GRPC used by the front end UI (default 8088)
+#   -frontend-path string
+#         Path to the frontend (default "/app/frontend")
+#   -frontend-port int
+#         Port for the front end UI (default 8080)
+#   -static-file-path string
+#         Path to the data folder (default "/uaptn/data/")
+#   -static-file-port int
+#         Port for the data folder http server (default 3000)

@@ -1,0 +1,155 @@
+version: '3.3'
+
+# /uaptn - root folder
+# /uaptn/db - database folder for tracker
+# /uaptn/data - other data folder
+# /uaptn/etc - configuration folder
+
+services:
+  uaptn-tracker:
+    container_name: uaptn-tracker
+    image: uaptn/tracker:develop
+    restart: always
+    networks:
+      - uaptn-network
+    environment:
+      upload-server-addr: uaptn-trackerd:8090
+    volumes:
+      - type: volume
+        source: uaptn-data
+        target: /uaptn/data
+        volume:
+          nocopy: true
+      - type: volume
+        source: uaptn-db
+        target: /uaptn/db
+        volume:
+          nocopy: true          
+      - type: volume
+        source: uaptn-etc
+        target: /uaptn/etc
+        volume:
+          nocopy: true          
+  uaptn-tracker-ui-backend:
+    container_name: uaptn-tracker-backend
+    image: uaptn/tracker-ui-backend:develop
+    restart: always
+    ports: 
+     - 8088:8088
+    networks:
+      - uaptn-network
+    volumes:
+      - type: volume
+        source: uaptn-data
+        target: /uaptn/data
+        volume:
+          nocopy: true
+      - type: volume
+        source: uaptn-db
+        target: /uaptn/db
+        volume:
+          nocopy: true          
+      - type: volume
+        source: uaptn-etc
+        target: /uaptn/etc
+        volume:
+          nocopy: true          
+  uaptn-tracker-ui:
+    container_name: uaptn-tracker-ui
+    image: uaptn/tracker-ui:develop
+    restart: always
+    ports: 
+     - 80:80
+    networks:
+      - uaptn-network
+    volumes:
+      - type: volume
+        source: uaptn-data
+        target: /uaptn/data
+        volume:
+          nocopy: true
+      - type: volume
+        source: uaptn-db
+        target: /uaptn/db
+        volume:
+          nocopy: true          
+      - type: volume
+        source: uaptn-etc
+        target: /uaptn/etc
+        volume:
+          nocopy: true
+  uaptn-gpsd:
+    container_name: uaptn-gpsd
+    image: uaptn/gpsd:develop
+    restart: always
+    networks:
+      - uaptn-network
+    privileged: true
+    devices:
+      - /dev/ttyAMA0:/dev/ttyAMA0 
+    command: -D2 /dev/ttyAMA0
+  uaptn-trackerd:
+    container_name: uaptn-trackerd
+    image: uaptn/trackerd:arm64-develop
+    restart: always
+    networks:
+      - uaptn-network
+networks:
+  uaptn-network:
+volumes:
+  uaptn-data:
+  uaptn-db:
+  uaptn-etc:
+
+# docker service create --name trackerd-dev \
+# --with-registry-auth \
+# --constraint 'node.labels.env==prod' \
+# --network traefik-net \
+# --label "traefik.enable=true" \
+# --label "traefik.http.middlewares.trackerd-dev-redirect-web-secure.redirectscheme.scheme=https" \
+# --label "traefik.http.routers.trackerd-dev-web.middlewares=trackerd-dev-redirect-web-secure" \
+# --label "traefik.http.routers.trackerd-dev-web.rule=Host(\`trackerapi-dev.uaptn.com\`)" \
+# --label "traefik.http.routers.trackerd-dev-web.entrypoints=web" \
+# --label "traefik.http.routers.trackerd-dev-web-secure.rule=Host(\`trackerapi-dev.uaptn.com\`)" \
+# --label "traefik.http.routers.trackerd-dev-web-secure.tls.certresolver=uaptnresolver" \
+# --label "traefik.http.routers.trackerd-dev-web-secure.tls=true" \
+# --label "traefik.http.routers.trackerd-dev-web-secure.entrypoints=websecure" \
+# --label "traefik.http.services.trackerd-dev-web-secure.loadbalancer.server.port=8088" \
+# --env "db-host=mysql" \
+# --env "db-name=uaptn-dev" \
+# --env "db-user=uaptn" \
+# --env "db-password=3fSS34f03lls" \
+# --env "grpc-listen-port=8088" \
+# $CI_REGISTRY/uaptn/uaptn:trackerd-develop
+
+# TRACKER
+# Usage of /app/tracker:
+#   -config-file string
+#     	path to config file (default "/uaptn/etc/tracker.yml")
+#   -data-path string
+#     	path to data directory (default "/uaptn/data")
+#   -db-path string
+#     	path to database file (default "/uaptn/db/tracker.db")
+#   -debug
+#     	Enable debugging
+#   -trackerd-server-addr string
+#     	Trackerd server address (default "localhost:8088")
+#   -upload-server-addr string
+#     	Upload server address (default "localhost:8090")
+
+# TRACKER UI BACKEND
+# Usage of cmd/bin/amd64/darwin/tracker-ui-backend:
+#   -db-path string
+#         Path to sqlite db (default "/uaptn/db/tracker.db")
+#   -frontend-enabled
+#         Enable / Disable the http frontend (default true)
+#   -frontend-grpc-port int
+#         Port for the for the GRPC used by the front end UI (default 8088)
+#   -frontend-path string
+#         Path to the frontend (default "/app/frontend")
+#   -frontend-port int
+#         Port for the front end UI (default 8080)
+#   -static-file-path string
+#         Path to the data folder (default "/uaptn/data/")
+#   -static-file-port int
+#         Port for the data folder http server (default 3000)

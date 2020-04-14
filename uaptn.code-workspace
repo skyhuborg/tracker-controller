@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "web/tracker-ui"
+		},
+		{
+			"path": "web/portal-ui"
+		}
+	],
+	"settings": {}
+}

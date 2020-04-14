@@ -1,0 +1,20 @@
+all: tracker-ui-backend
+
+VERSION=`git rev-parse --short HEAD`
+LDFLAGS=-ldflags "-X main.version=$(VERSION)"
+ARCH := $(shell uname -m)
+OS_NAME := $(shell uname -s | tr A-Z a-z)
+
+ifeq ($(ARCH),aarch64)
+	ARCH=arm64
+endif
+
+ifeq ($(ARCH),x86_64)
+	ARCH=amd64
+endif
+
+prebuild:
+	mkdir -p bin/arm64/linux bin/amd64/linux bin/amd64/windows bin/amd64/darwin
+
+tracker-ui-backend: prebuild
+	GOOS=$(OS_NAME) GOARCH=$(ARCH) go build $(LDFLAGS) -o bin/$(ARCH)/$(OS_NAME)/tracker-ui-backend tracker-ui-backend/*.go 
