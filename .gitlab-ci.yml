@@ -1,151 +1,57 @@
 stages:
-    - build-x86
     - build-arm
-    - deploy-x86
     - deploy-arm
   
-x86-images-build:
-    stage: build-x86
-    before_script:
-        - docker info
-    script: 
-        - docker build -t $CI_REGISTRY/uaptn/uaptn:portald-develop -f build/portald.Dockerfile .
-        - docker build -t $CI_REGISTRY/uaptn/uaptn:trackerd-develop -f build/trackerd.amd64.Dockerfile .
-        - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-        - docker push $CI_REGISTRY/uaptn/uaptn:portald-develop
-        - docker push $CI_REGISTRY/uaptn/uaptn:trackerd-develop
-    artifacts:
-        paths:
-        - build
-    tags:
-        - swarm-node-01
-    only:
-        - develop
-
-arm-images-build:
+dev-arm-build:
     stage: build-arm
     before_script:
         - docker info
     script: 
-        - docker build -t $DOCKER_REGISTRY/uaptn/tracker:$CI_COMMIT_REF_NAME -f build/tracker.arm64.Dockerfile .
-        - docker build -t $DOCKER_REGISTRY/uaptn/tracker-ui-backend:$CI_COMMIT_REF_NAME -f build/tracker-ui-backend.Dockerfile  .
-        - docker build -t $DOCKER_REGISTRY/uaptn/gpsd:$CI_COMMIT_REF_NAME -f build/gpsd.arm64.Dockerfile  .
-        - docker build -t $DOCKER_REGISTRY/uaptn/trackerd:amd64-$CI_COMMIT_REF_NAME -f build/trackerd.arm64.Dockerfile .
+        - docker build -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME -f build/tracker-ui-backend.Dockerfile  .
     tags:
         - xavier
     only:
         - develop
-        - master
 
-arm-images-develop:
-    stage: deploy-arm
+master-arm-build:
+    stage: build-arm
     before_script:
         - docker info
     script: 
-        - docker login $DOCKER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASSWORD
-        - docker push $DOCKER_REGISTRY/uaptn/tracker:$CI_COMMIT_REF_NAME
-        - docker push $DOCKER_REGISTRY/uaptn/tracker-ui-backend:$CI_COMMIT_REF_NAME
-        - docker push $DOCKER_REGISTRY/uaptn/gpsd:$CI_COMMIT_REF_NAME
-        - docker push $DOCKER_REGISTRY/uaptn/trackerd:amd64-$CI_COMMIT_REF_NAME
+        - docker build -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:latest -f build/tracker-ui-backend.Dockerfile  .
     tags:
         - xavier
     only:
         - develop
+
+dev-arm-deploy:
+    stage: deploy-arm
+    before_script:
+        - docker info
+    script:
+        - docker login $DOCKER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASSWORD
+        - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME
+    tags:
+        - xavier
+    only:
+        - develop
+    when: always
     dependencies:
-        - arm-images-build
+        - dev-arm-build
 
 arm-images-master:
     stage: deploy-arm
     before_script:
         - docker info
-    script: 
+    script:
         - docker login $DOCKER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASSWORD
-        - docker tag $DOCKER_REGISTRY/tracker:$CI_COMMIT_REF_NAME $DOCKER_REGISTRY/uaptn/tracker:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
-        - docker tag $DOCKER_REGISTRY/tracker:$CI_COMMIT_REF_NAME $DOCKER_REGISTRY/uaptn/tracker:latest
-        - docker tag $DOCKER_REGISTRY/tracker-ui-backend:$CI_COMMIT_REF_NAME $DOCKER_REGISTRY/uaptn/tracker-ui-backend:$CI_COMMIT_REF_NAME--$CI_COMMIT_SHORT_SHA
-        - docker tag $DOCKER_REGISTRY/tracker-ui-backend:$CI_COMMIT_REF_NAME $DOCKER_REGISTRY/uaptn/tracker-ui-backend:latest
-        - docker tag $DOCKER_REGISTRY/uaptn/gpsd:$CI_COMMIT_REF_NAME $DOCKER_REGISTRY/uaptn/gpsd:latest
-        - docker tag $DOCKER_REGISTRY/uaptn/trackerd:$CI_COMMIT_REF_NAME $DOCKER_REGISTRY/uaptn/trackerd:amd64-latest
-        - docker push $DOCKER_REGISTRY/uaptn/tracker:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
-        - docker push $DOCKER_REGISTRY/uaptn/tracker:latest
-        - docker push $DOCKER_REGISTRY/uaptn/tracker-ui-backend:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
-        - docker push $DOCKER_REGISTRY/uaptn/tracker-ui-backend:latest
-        - docker push $DOCKER_REGISTRY/uaptn/gpsd:latest
-        - docker push $DOCKER_REGISTRY/uaptn/trackerd:amd64-latest
+        - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+        - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH:latest
     tags:
         - xavier
     only:
         - master
-    dependencies:
-        - arm-images-build
-
-portald-dev:
-    stage: deploy-x86
-    before_script:
-        - docker info
-    script: 
-        - echo "Step 1, login to registry"
-        - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-        - echo "Step 2, deploy into the swarm"
-        - docker service rm portald-dev || true
-        - |
-          docker service create --name portald-dev \
-            --with-registry-auth \
-            --constraint 'node.labels.env==prod' \
-            --label "traefik.enable=true" \
-            --label "traefik.http.middlewares.portald-dev-redirect-web-secure.redirectscheme.scheme=https" \
-            --label "traefik.http.routers.portald-dev-web.middlewares=portald-dev-redirect-web-secure" \
-            --label "traefik.http.routers.portald-dev-web.rule=Host(\`api-dev.uaptn.com\`)" \
-            --label "traefik.http.routers.portald-dev-web.entrypoints=web" \
-            --label "traefik.http.routers.portald-dev-web-secure.rule=Host(\`api-dev.uaptn.com\`)" \
-            --label "traefik.http.routers.portald-dev-web-secure.tls.certresolver=uaptnresolver" \
-            --label "traefik.http.routers.portald-dev-web-secure.tls=true" \
-            --label "traefik.http.routers.portald-dev-web-secure.entrypoints=websecure" \
-            --label "traefik.http.services.portald-dev-web-secure.loadbalancer.server.port=80" \
-            --network traefik-net \
-            $CI_REGISTRY/uaptn/uaptn:portald-develop
-    tags:
-        - swarm-node-01
-    only:
-        - develop
     when: manual
     dependencies:
-        - x86-images-build
+        - master-arm-build
 
-trackerd-dev:
-    stage: deploy-x86
-    before_script:
-        - docker info
-    script: 
-        - echo "Step 1, login to registry"
-        - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-        - echo "Step 2, deploy into the swarm"
-        - docker service rm trackerd-dev || true
-        - |
-          docker service create --name trackerd-dev \
-            --with-registry-auth \
-            --constraint 'node.labels.env==prod' \
-            --network traefik-net \
-            --label "traefik.enable=true" \
-            --label "traefik.http.middlewares.trackerd-dev-redirect-web-secure.redirectscheme.scheme=https" \
-            --label "traefik.http.routers.trackerd-dev-web.middlewares=trackerd-dev-redirect-web-secure" \
-            --label "traefik.http.routers.trackerd-dev-web.rule=Host(\`trackerapi-dev.uaptn.com\`)" \
-            --label "traefik.http.routers.trackerd-dev-web.entrypoints=web" \
-            --label "traefik.http.routers.trackerd-dev-web-secure.rule=Host(\`trackerapi-dev.uaptn.com\`)" \
-            --label "traefik.http.routers.trackerd-dev-web-secure.tls.certresolver=uaptnresolver" \
-            --label "traefik.http.routers.trackerd-dev-web-secure.tls=true" \
-            --label "traefik.http.routers.trackerd-dev-web-secure.entrypoints=websecure" \
-            --label "traefik.http.services.trackerd-dev-web-secure.loadbalancer.server.port=8088" \
-            --env "db-host=mysql" \
-            --env "db-name=uaptn-dev" \
-            --env "db-user=uaptn" \
-            --env "db-password=3fSS34f03lls" \
-            --env "grpc-listen-port=8088" \
-            $CI_REGISTRY/uaptn/uaptn:trackerd-develop
-    tags:
-        - swarm-node-01
-    only:
-        - develop
-    when: manual
-    dependencies:
-        - x86-images-build
