@@ -51,10 +51,10 @@ type Server struct {
     TlsKey     string
     TlsCert    string
 	ConfigFile string
+	DbPath     string
 
 
 	config *common.Config
-	dbPath string
     db    *common.DB
 }
 
@@ -71,7 +71,7 @@ func (s *Server) OpenConfig() (err error) {
 func (s *Server) ConnectDb() (error) {
 	db := common.DB{}
 
-	err := db.Open(s.dbPath)
+	err := db.Open(s.DbPath)
 
 	if err != nil {
 		grpclog.Printf("Error: %s\n")
@@ -87,23 +87,32 @@ func (s *Server) Close() {
 	s.db.Close()
 }
 
+func (s *Server) Start() {
+	var (
+		err error
+	)
 
+	err = s.OpenConfig()
 
+	if err != nil {
+		log.Printf("OpenConfig failed: %s\n", err);
+		return
+	}
 
-func StartGrpc(port int, dbPath string) {
-	//lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	err = s.ConnectDb()
 
-	//if err != nil {
-	//    log.Fatalf("failed to listen: %v", err)
-	//}
+	if err != nil {
+		log.Printf("ConnectDb failed with: %s\n", err);
+		return
+	}
 
-	s := grpc.NewServer()
+	s.Handle = grpc.NewServer()
 
-	pb.RegisterControllerServer(s, &Server{dbPath: dbPath})
+	pb.RegisterControllerServer(s.Handle, s)
 
-	grpclog.SetLogger(log.New(os.Stdout, "uaptn-controller: ", log.LstdFlags))
+	grpclog.SetLogger(log.New(os.Stdout, "tracker-controller: ", log.LstdFlags))
 
-	wrappedServer := grpcweb.WrapServer(s,
+	wrappedServer := grpcweb.WrapServer(s.Handle,
 		grpcweb.WithOriginFunc(func(origin string) bool {
 			return true
 		}))
@@ -113,11 +122,11 @@ func StartGrpc(port int, dbPath string) {
 	}
 
 	httpServer := http.Server{
-		Addr:    fmt.Sprintf(":%d", port),
+		Addr:    fmt.Sprintf(":%d", s.ListenPort),
 		Handler: http.HandlerFunc(handler),
 	}
 
-	grpclog.Printf("Starting server without TLS on port %d", port)
+	grpclog.Printf("Starting server without TLS on port %d", s.ListenPort)
 	if err := httpServer.ListenAndServe(); err != nil {
 		grpclog.Fatalf("failed starting http server: %v", err)
 	}
@@ -186,7 +195,7 @@ func (s *Server) GetEvents(ctx context.Context, in *pb.GetEventsReq) (*pb.GetEve
 	var err error
 	db := common.DB{}
 
-	err = db.Open(s.dbPath)
+	err = db.Open(s.DbPath)
 
 	if err != nil {
 		grpclog.Printf("Error: %s\n")
@@ -218,7 +227,7 @@ func (s *Server) GetVideoEvents(ctx context.Context, in *pb.GetVideoEventsReq) (
 	var err error
 	db := common.DB{}
 
-	err = db.Open(s.dbPath)
+	err = db.Open(s.DbPath)
 
 	if err != nil {
 		grpclog.Printf("Error: %s\n")

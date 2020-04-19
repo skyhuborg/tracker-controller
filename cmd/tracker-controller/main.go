@@ -39,6 +39,10 @@ import (
 )
 
 type Environment struct {
+    GrpcListenPort   int
+    GrpcEnableTls    bool
+    GrpcTlsKey       string
+    GrpcTlsCert      string
 	FrontendEnabled  bool
 	FrontendPath     string
 	FrontendPort     int
@@ -60,9 +64,24 @@ func ServeStatic() {
 }
 
 func main() {
+    var (
+        grpcServer         controller.Server
+    )
+
 	parseConfig()
 
-	go controller.StartGrpc(env.FrontendGRPCPort, env.DbPath)
+   // set configuration for grpc server
+    grpcServer.EnableTls = env.GrpcEnableTls
+    grpcServer.ListenPort = env.GrpcListenPort
+    grpcServer.TlsCert = env.GrpcTlsCert
+    grpcServer.TlsKey = env.GrpcTlsKey
+    grpcServer.ConfigFile = env.ConfigFile
+    grpcServer.DbPath = env.DbPath
+	
+
+
+	go grpcServer.Start()
+
 	if env.FrontendEnabled {
 		log.Println("tracker-ui spa path:" + env.FrontendPath)
 		log.Println("tracker-ui spa listening on port:" + strconv.Itoa(env.FrontendPort) + "...")
