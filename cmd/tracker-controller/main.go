@@ -35,7 +35,7 @@ import (
 	"strconv"
 	"time"
 
-	"gitlab.com/uaptn/uaptn/internal/trackerui"
+	"gitlab.com/uaptn/uaptn/internal/controller"
 )
 
 type Environment struct {
@@ -46,6 +46,7 @@ type Environment struct {
 	StaticDataPath   string
 	StaticDataPort   int
 	DbPath           string
+	ConfigFile       string
 }
 
 var env Environment
@@ -84,10 +85,9 @@ func parseConfig() {
 	paramFrontendPath := "frontend-path"
 	paramFrontendPort := "frontend-port"
 	paramFrontendGrpcPort := "frontend-grpc-port"
-
 	paramStaticDataPath := "static-file-path"
 	paramStaticDataPort := "static-file-port"
-
+	paramConfigFile := "config-file"
 	paramDbPath := "db-path"
 
 	/// Pull environment variables
@@ -100,6 +100,7 @@ func parseConfig() {
 	envStaticDataPort := os.Getenv(paramFrontendPort)
 
 	envDbPath := os.Getenv(paramDbPath)
+	envConfigFile := os.Getenv(paramConfigFile)
 
 	/// Check for commandline variables
 	flag.BoolVar(&env.FrontendEnabled, paramFrontendEnabled, true, "Enable / Disable the http frontend")
@@ -110,6 +111,7 @@ func parseConfig() {
 	flag.StringVar(&env.StaticDataPath, paramStaticDataPath, "/uaptn/data/", "Path to the data folder")
 	flag.IntVar(&env.StaticDataPort, paramStaticDataPort, 3000, "Port for the data folder http server")
 	flag.StringVar(&env.DbPath, paramDbPath, "/uaptn/db/tracker.db", "Path to sqlite db")
+	flag.StringVar(&env.ConfigFile, paramConfigFile, "/uaptn/etc/tracker.yml", "path to config file")
 
 	flag.Parse()
 
@@ -147,6 +149,9 @@ func parseConfig() {
 	}
 	if len(envDbPath) > 0 {
 		env.DbPath = envDbPath
-
 	}
+
+    if len(envConfigFile) > 0 {
+        env.ConfigFile = envConfigFile
+    }
 }

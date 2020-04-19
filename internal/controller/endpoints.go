@@ -25,7 +25,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
-package trackerui
+package controller
 
 import (
 	"context"
@@ -33,7 +33,7 @@ import (
 	_ "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
-	pb "gitlab.com/uaptn/proto-tracker-ui-go"
+	pb "gitlab.com/uaptn/proto-tracker-controller-go"
 	"gitlab.com/uaptn/uaptn/internal/common"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
@@ -44,9 +44,48 @@ import (
 	"path/filepath"
 )
 
-type server struct {
+type Server struct {
+    Handle     *grpc.Server
+    ListenPort int
+    EnableTls  bool
+    TlsKey     string
+    TlsCert    string
+	ConfigFile string
+
+
+	config *common.Config
 	dbPath string
+    db    *common.DB
 }
+
+func (s *Server) OpenConfig() err {
+	err := s.config.Open(s.ConfigFile)
+
+	if err != nil {
+		log.Printf("Error: failed opening configuration: %s", s.ConfigFile)
+		return err
+	}
+	return nil
+}
+
+func (s *Server) ConnectDb() *gorm.DB {
+	db := common.DB{}
+
+	err = db.Open(s.dbPath)
+
+	if err != nil {
+		grpclog.Printf("Error: %s\n")
+		return r, err
+	}
+}
+
+func (s *Server) Close() {
+	s.config.Close()
+	s.db.Close()
+}
+
+
+
 
 func StartGrpc(port int, dbPath string) {
 	//lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
@@ -57,9 +96,9 @@ func StartGrpc(port int, dbPath string) {
 
 	s := grpc.NewServer()
 
-	pb.RegisterUiServer(s, &server{dbPath: dbPath})
+	pb.RegisterControllerServer(s, &server{dbPath: dbPath})
 
-	grpclog.SetLogger(log.New(os.Stdout, "uaptn-ui: ", log.LstdFlags))
+	grpclog.SetLogger(log.New(os.Stdout, "uaptn-controller: ", log.LstdFlags))
 
 	wrappedServer := grpcweb.WrapServer(s,
 		grpcweb.WithOriginFunc(func(origin string) bool {

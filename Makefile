@@ -1,4 +1,4 @@
-all: tracker-ui-backend
+all: tracker-controller
 
 VERSION=`git rev-parse --short HEAD`
 LDFLAGS=-ldflags "-X main.version=$(VERSION)"
@@ -9,5 +9,5 @@ ifeq ($(OS_NAME),darwin)
 	SED_COMMAND=gsed
 endif
 
-tracker-ui-backend:
-	make -C cmd tracker-ui-backend
+tracker-controller:
+	make -C cmd tracker-controller

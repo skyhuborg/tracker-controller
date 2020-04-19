@@ -26,13 +26,14 @@ require (
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/orcaman/concurrent-map v0.0.0-20190826125027-8c72a8bb44f6 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pkg/errors v0.9.1
 	github.com/rs/cors v1.7.0 // indirect
 	github.com/stratoberry/go-gpsd v0.0.0-20161204231141-54ddcfa61f47 // indirect
 	github.com/stretchr/testify v1.5.1 // indirect
 	github.com/tidwall/pretty v1.0.1 // indirect
 	github.com/xdg/stringprep v1.0.0 // indirect
 	gitlab.com/uaptn/proto-portald-go v0.0.0-20200324225944-ac8a36d9837f // indirect
+	gitlab.com/uaptn/proto-tracker-controller-go v0.0.0-20200419024926-6c431d8eafd2
 	gitlab.com/uaptn/proto-tracker-ui-go v0.0.0-20200412201251-f5d1299dc59c
 	gitlab.com/uaptn/proto-trackerd-go v0.0.0-20200409154923-28aad26621e8
 	go.bug.st/serial v1.0.0 // indirect
