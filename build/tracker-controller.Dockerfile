@@ -12,4 +12,4 @@ RUN mkdir -p /uaptn/data
 COPY --from=build-stage /app/cmd/bin/arm64/linux/tracker-controller /uaptn/tracker-controller
 EXPOSE 8088
 WORKDIR /uaptn
-CMD ["/uaptn/tracker-ui-backend"]
+CMD ["/uaptn/tracker-controller"]
