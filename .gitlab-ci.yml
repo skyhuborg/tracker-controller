@@ -7,7 +7,7 @@ dev-arm-build:
     before_script:
         - docker info
     script: 
-        - docker build -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME -f build/tracker-ui-backend.Dockerfile  .
+        - docker build -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME -f build/tracker-controller.Dockerfile  .
     tags:
         - xavier
     only:
@@ -18,7 +18,7 @@ master-arm-build:
     before_script:
         - docker info
     script: 
-        - docker build -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:latest -f build/tracker-ui-backend.Dockerfile  .
+        - docker build -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:latest -f build/tracker-controller.Dockerfile  .
     tags:
         - xavier
     only:
