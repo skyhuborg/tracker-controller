@@ -9,7 +9,7 @@ RUN make tracker-controller
 FROM nginx:stable-alpine as production-stage
 RUN apk add --no-cache sqlite
 RUN mkdir -p /uaptn/data
-COPY --from=build-stage /app/cmd/bin/arm64/linux/tracker-ui-backend /uaptn/tracker-controller
+COPY --from=build-stage /app/cmd/bin/arm64/linux/tracker-controller /uaptn/tracker-controller
 EXPOSE 8088
 WORKDIR /uaptn
 CMD ["/uaptn/tracker-ui-backend"]
