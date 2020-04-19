@@ -50,7 +50,7 @@ type VideoEvent struct {
 	EventId      string    `gorm:"column:event_id; PRIMARY_KEY" json:"event_id"`
 	CreatedAt    time.Time `gorm:"type:datetime;Column:created_at"`
 	Uri          string    `gorm:"type:text"`
-	Thumbnail        string    `gorm:"type:text"`
+	Thumbnail    string    `gorm:"type:text"`
 	IsUploaded   bool      `gorm:"default:false"`
 	IsPending    bool      `gorm:"default:false"`
 	IsInprogress bool      `gorm:"default:false"`

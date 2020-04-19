@@ -45,17 +45,16 @@ import (
 )
 
 type Server struct {
-    Handle     *grpc.Server
-    ListenPort int
-    EnableTls  bool
-    TlsKey     string
-    TlsCert    string
+	Handle     *grpc.Server
+	ListenPort int
+	EnableTls  bool
+	TlsKey     string
+	TlsCert    string
 	ConfigFile string
 	DbPath     string
 
-
 	config common.Config
-    db    common.DB
+	db     common.DB
 }
 
 func (s *Server) OpenConfig() (err error) {
@@ -68,7 +67,7 @@ func (s *Server) OpenConfig() (err error) {
 	return nil
 }
 
-func (s *Server) ConnectDb() (error) {
+func (s *Server) ConnectDb() error {
 	db := common.DB{}
 
 	err := db.Open(s.DbPath)
@@ -95,14 +94,14 @@ func (s *Server) Start() {
 	err = s.OpenConfig()
 
 	if err != nil {
-		log.Printf("OpenConfig failed: %s\n", err);
+		log.Printf("OpenConfig failed: %s\n", err)
 		return
 	}
 
 	err = s.ConnectDb()
 
 	if err != nil {
-		log.Printf("ConnectDb failed with: %s\n", err);
+		log.Printf("ConnectDb failed with: %s\n", err)
 		return
 	}
 

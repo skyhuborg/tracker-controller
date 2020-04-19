@@ -27,7 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 package trackerui
 */
 
-package controller 
+package controller
 
 import (
 	"log"

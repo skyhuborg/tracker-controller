@@ -29,27 +29,27 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"gitlab.com/uaptn/uaptn/internal/controller"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
-	"fmt"
-	"gitlab.com/uaptn/uaptn/internal/controller"
 )
 
 type Environment struct {
-    GrpcListenPort   int
-    GrpcEnableTls    bool
-    GrpcTlsKey       string
-    GrpcTlsCert      string
-	HttpEnabled      bool
-	HttpPath         string
-	HttpPort         int
-	StaticDataPath   string
-	StaticDataPort   int
-	DbPath           string
-	ConfigFile       string
+	GrpcListenPort int
+	GrpcEnableTls  bool
+	GrpcTlsKey     string
+	GrpcTlsCert    string
+	HttpEnabled    bool
+	HttpPath       string
+	HttpPort       int
+	StaticDataPath string
+	StaticDataPort int
+	DbPath         string
+	ConfigFile     string
 }
 
 var env Environment
@@ -63,19 +63,19 @@ func ServeStatic() {
 }
 
 func main() {
-    var (
-        grpcServer         controller.Server
-    )
+	var (
+		grpcServer controller.Server
+	)
 
 	parseConfig()
 
-   // set configuration for grpc server
-    grpcServer.EnableTls = env.GrpcEnableTls
-    grpcServer.ListenPort = env.GrpcListenPort
-    grpcServer.TlsCert = env.GrpcTlsCert
-    grpcServer.TlsKey = env.GrpcTlsKey
-    grpcServer.ConfigFile = env.ConfigFile
-    grpcServer.DbPath = env.DbPath
+	// set configuration for grpc server
+	grpcServer.EnableTls = env.GrpcEnableTls
+	grpcServer.ListenPort = env.GrpcListenPort
+	grpcServer.TlsCert = env.GrpcTlsCert
+	grpcServer.TlsKey = env.GrpcTlsKey
+	grpcServer.ConfigFile = env.ConfigFile
+	grpcServer.DbPath = env.DbPath
 
 	go grpcServer.Start()
 
@@ -166,7 +166,7 @@ func parseConfig() {
 		env.DbPath = envDbPath
 	}
 
-    if len(envConfigFile) > 0 {
-        env.ConfigFile = envConfigFile
-    }
+	if len(envConfigFile) > 0 {
+		env.ConfigFile = envConfigFile
+	}
 }
