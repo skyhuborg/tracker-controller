@@ -1,4 +1,4 @@
-all: tracker-ui-backend
+all: tracker-controller
 
 VERSION=`git rev-parse --short HEAD`
 LDFLAGS=-ldflags "-X main.version=$(VERSION)"
@@ -16,5 +16,5 @@ endif
 prebuild:
 	mkdir -p bin/arm64/linux bin/amd64/linux bin/amd64/windows bin/amd64/darwin
 
-tracker-ui-backend: prebuild
-	GOOS=$(OS_NAME) GOARCH=$(ARCH) go build $(LDFLAGS) -o bin/$(ARCH)/$(OS_NAME)/tracker-ui-backend tracker-ui-backend/*.go 
+tracker-controller: prebuild
+	GOOS=$(OS_NAME) GOARCH=$(ARCH) go build $(LDFLAGS) -o bin/$(ARCH)/$(OS_NAME)/tracker-controller tracker-controller/*.go 

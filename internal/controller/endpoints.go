@@ -25,7 +25,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
-package trackerui
+package controller
 
 import (
 	"context"
@@ -33,7 +33,7 @@ import (
 	_ "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
-	pb "gitlab.com/uaptn/proto-tracker-ui-go"
+	pb "gitlab.com/uaptn/proto-tracker-controller-go"
 	"gitlab.com/uaptn/uaptn/internal/common"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
@@ -44,24 +44,75 @@ import (
 	"path/filepath"
 )
 
-type server struct {
-	dbPath string
+type Server struct {
+    Handle     *grpc.Server
+    ListenPort int
+    EnableTls  bool
+    TlsKey     string
+    TlsCert    string
+	ConfigFile string
+	DbPath     string
+
+
+	config common.Config
+    db    common.DB
 }
 
-func StartGrpc(port int, dbPath string) {
-	//lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+func (s *Server) OpenConfig() (err error) {
+	err = s.config.Open(s.ConfigFile)
 
-	//if err != nil {
-	//    log.Fatalf("failed to listen: %v", err)
-	//}
+	if err != nil {
+		log.Printf("Error: failed opening configuration: %s", s.ConfigFile)
+		return err
+	}
+	return nil
+}
 
-	s := grpc.NewServer()
+func (s *Server) ConnectDb() (error) {
+	db := common.DB{}
 
-	pb.RegisterUiServer(s, &server{dbPath: dbPath})
+	err := db.Open(s.DbPath)
 
-	grpclog.SetLogger(log.New(os.Stdout, "uaptn-ui: ", log.LstdFlags))
+	if err != nil {
+		grpclog.Printf("Error: %s\n")
+		return err
+	}
 
-	wrappedServer := grpcweb.WrapServer(s,
+	s.db = db
+	return nil
+}
+
+func (s *Server) Close() {
+	s.config.Close()
+	s.db.Close()
+}
+
+func (s *Server) Start() {
+	var (
+		err error
+	)
+
+	err = s.OpenConfig()
+
+	if err != nil {
+		log.Printf("OpenConfig failed: %s\n", err);
+		return
+	}
+
+	err = s.ConnectDb()
+
+	if err != nil {
+		log.Printf("ConnectDb failed with: %s\n", err);
+		return
+	}
+
+	s.Handle = grpc.NewServer()
+
+	pb.RegisterControllerServer(s.Handle, s)
+
+	grpclog.SetLogger(log.New(os.Stdout, "tracker-controller: ", log.LstdFlags))
+
+	wrappedServer := grpcweb.WrapServer(s.Handle,
 		grpcweb.WithOriginFunc(func(origin string) bool {
 			return true
 		}))
@@ -71,89 +122,51 @@ func StartGrpc(port int, dbPath string) {
 	}
 
 	httpServer := http.Server{
-		Addr:    fmt.Sprintf(":%d", port),
+		Addr:    fmt.Sprintf(":%d", s.ListenPort),
 		Handler: http.HandlerFunc(handler),
 	}
 
-	grpclog.Printf("Starting server without TLS on port %d", port)
+	grpclog.Printf("Starting server without TLS on port %d", s.ListenPort)
 	if err := httpServer.ListenAndServe(); err != nil {
 		grpclog.Fatalf("failed starting http server: %v", err)
 	}
 }
 
-func (s *server) SetConfig(ctx context.Context, in *pb.SetConfigReq) (*pb.SetConfigResp, error) {
+func (s *Server) SetConfig(ctx context.Context, in *pb.SetConfigReq) (*pb.SetConfigResp, error) {
 	r := pb.SetConfigResp{}
-	config := common.Config{}
-
-	err := config.Open("/uaptn/etc/node.ini")
-
-	if err != nil {
-		log.Printf("Error: failed opening configuration")
-	}
-
-	defer config.Close()
 
 	grpclog.Printf("SetConfig called\n")
-	config.SetConfigFromPb(in.Config)
-
-	config.Save()
+	s.config.SetConfigFromPb(in.Config)
+	s.config.Save()
 
 	return &r, nil
 }
 
-func (s *server) GetIsConfigured(ctx context.Context, in *pb.GetIsConfiguredReq) (*pb.GetIsConfiguredResp, error) {
+func (s *Server) GetIsConfigured(ctx context.Context, in *pb.GetIsConfiguredReq) (*pb.GetIsConfiguredResp, error) {
 	r := pb.GetIsConfiguredResp{}
-	config := common.Config{}
-
-	err := config.Open("/uaptn/etc/node.ini")
-
-	if err != nil {
-		log.Printf("Error: failed opening configuration")
-	}
-
-	defer config.Close()
 
 	grpclog.Printf("GetIsConfigured called\n")
 
-	r.IsConfigured = config.GetIsConfigured()
+	r.IsConfigured = s.config.GetIsConfigured()
 
 	return &r, nil
 }
 
-func (s *server) GetConfig(ctx context.Context, in *pb.GetConfigReq) (*pb.GetConfigResp, error) {
+func (s *Server) GetConfig(ctx context.Context, in *pb.GetConfigReq) (*pb.GetConfigResp, error) {
 	r := pb.GetConfigResp{}
 
-	config := common.Config{}
-
-	err := config.Open("/uaptn/etc/node.ini")
-
-	if err != nil {
-		log.Printf("Error: failed opening configuration")
-		return &r, err
-	}
-
-	defer config.Close()
-
 	grpclog.Printf("GetConfig called\n")
-	r.Config = config.GetConfigPb()
+
+	r.Config = s.config.GetConfigPb()
+
 	return &r, nil
 }
 
-func (s *server) GetEvents(ctx context.Context, in *pb.GetEventsReq) (*pb.GetEventsResp, error) {
+func (s *Server) GetEvents(ctx context.Context, in *pb.GetEventsReq) (*pb.GetEventsResp, error) {
 	r := &pb.GetEventsResp{}
 	var err error
-	db := common.DB{}
 
-	err = db.Open(s.dbPath)
-
-	if err != nil {
-		grpclog.Printf("Error: %s\n")
-		return r, err
-	}
-
-	defer db.Close()
-
-	events, total, err := db.GetEvents(in.Limit)
+	events, total, err := s.db.GetEvents(in.Limit)
 
 	for _, e := range events {
 		ts, _ := ptypes.TimestampProto(e.CreatedAt)
@@ -171,21 +184,11 @@ func (s *server) GetEvents(ctx context.Context, in *pb.GetEventsReq) (*pb.GetEve
 	return r, err
 }
 
-func (s *server) GetVideoEvents(ctx context.Context, in *pb.GetVideoEventsReq) (*pb.GetVideoEventsResp, error) {
+func (s *Server) GetVideoEvents(ctx context.Context, in *pb.GetVideoEventsReq) (*pb.GetVideoEventsResp, error) {
 	r := &pb.GetVideoEventsResp{}
 	var err error
-	db := common.DB{}
 
-	err = db.Open(s.dbPath)
-
-	if err != nil {
-		grpclog.Printf("Error: %s\n")
-		return r, err
-	}
-
-	defer db.Close()
-
-	events, total, err := db.GetVideoEvents(in.Limit)
+	events, total, err := s.db.GetVideoEvents(in.Limit)
 
 	for _, e := range events {
 		ts, _ := ptypes.TimestampProto(e.CreatedAt)
