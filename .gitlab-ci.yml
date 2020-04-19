@@ -22,7 +22,7 @@ master-arm-build:
     tags:
         - xavier
     only:
-        - develop
+        - master
 
 dev-arm-deploy:
     stage: deploy-arm
