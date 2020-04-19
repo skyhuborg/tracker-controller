@@ -62,11 +62,11 @@ func ServeStatic() {
 func main() {
 	parseConfig()
 
-	go trackerui.StartGrpc(env.FrontendGRPCPort, env.DbPath)
+	go controller.StartGrpc(env.FrontendGRPCPort, env.DbPath)
 	if env.FrontendEnabled {
 		log.Println("tracker-ui spa path:" + env.FrontendPath)
 		log.Println("tracker-ui spa listening on port:" + strconv.Itoa(env.FrontendPort) + "...")
-		go trackerui.HttpServeSPA(":"+strconv.Itoa(env.FrontendPort), env.FrontendPath)
+		go controller.HttpServeSPA(":"+strconv.Itoa(env.FrontendPort), env.FrontendPath)
 
 	} else {
 		log.Println("tracker-ui disabled")

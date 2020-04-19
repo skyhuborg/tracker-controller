@@ -58,8 +58,8 @@ type Server struct {
     db    *common.DB
 }
 
-func (s *Server) OpenConfig() err {
-	err := s.config.Open(s.ConfigFile)
+func (s *Server) OpenConfig() (err error) {
+	err = s.config.Open(s.ConfigFile)
 
 	if err != nil {
 		log.Printf("Error: failed opening configuration: %s", s.ConfigFile)
@@ -68,15 +68,18 @@ func (s *Server) OpenConfig() err {
 	return nil
 }
 
-func (s *Server) ConnectDb() *gorm.DB {
+func (s *Server) ConnectDb() (error) {
 	db := common.DB{}
 
-	err = db.Open(s.dbPath)
+	err := db.Open(s.dbPath)
 
 	if err != nil {
 		grpclog.Printf("Error: %s\n")
-		return r, err
+		return err
 	}
+
+	s.db = &db
+	return nil
 }
 
 func (s *Server) Close() {
@@ -96,7 +99,7 @@ func StartGrpc(port int, dbPath string) {
 
 	s := grpc.NewServer()
 
-	pb.RegisterControllerServer(s, &server{dbPath: dbPath})
+	pb.RegisterControllerServer(s, &Server{dbPath: dbPath})
 
 	grpclog.SetLogger(log.New(os.Stdout, "uaptn-controller: ", log.LstdFlags))
 
@@ -120,7 +123,7 @@ func StartGrpc(port int, dbPath string) {
 	}
 }
 
-func (s *server) SetConfig(ctx context.Context, in *pb.SetConfigReq) (*pb.SetConfigResp, error) {
+func (s *Server) SetConfig(ctx context.Context, in *pb.SetConfigReq) (*pb.SetConfigResp, error) {
 	r := pb.SetConfigResp{}
 	config := common.Config{}
 
@@ -140,7 +143,7 @@ func (s *server) SetConfig(ctx context.Context, in *pb.SetConfigReq) (*pb.SetCon
 	return &r, nil
 }
 
-func (s *server) GetIsConfigured(ctx context.Context, in *pb.GetIsConfiguredReq) (*pb.GetIsConfiguredResp, error) {
+func (s *Server) GetIsConfigured(ctx context.Context, in *pb.GetIsConfiguredReq) (*pb.GetIsConfiguredResp, error) {
 	r := pb.GetIsConfiguredResp{}
 	config := common.Config{}
 
@@ -159,7 +162,7 @@ func (s *server) GetIsConfigured(ctx context.Context, in *pb.GetIsConfiguredReq)
 	return &r, nil
 }
 
-func (s *server) GetConfig(ctx context.Context, in *pb.GetConfigReq) (*pb.GetConfigResp, error) {
+func (s *Server) GetConfig(ctx context.Context, in *pb.GetConfigReq) (*pb.GetConfigResp, error) {
 	r := pb.GetConfigResp{}
 
 	config := common.Config{}
@@ -178,7 +181,7 @@ func (s *server) GetConfig(ctx context.Context, in *pb.GetConfigReq) (*pb.GetCon
 	return &r, nil
 }
 
-func (s *server) GetEvents(ctx context.Context, in *pb.GetEventsReq) (*pb.GetEventsResp, error) {
+func (s *Server) GetEvents(ctx context.Context, in *pb.GetEventsReq) (*pb.GetEventsResp, error) {
 	r := &pb.GetEventsResp{}
 	var err error
 	db := common.DB{}
@@ -210,7 +213,7 @@ func (s *server) GetEvents(ctx context.Context, in *pb.GetEventsReq) (*pb.GetEve
 	return r, err
 }
 
-func (s *server) GetVideoEvents(ctx context.Context, in *pb.GetVideoEventsReq) (*pb.GetVideoEventsResp, error) {
+func (s *Server) GetVideoEvents(ctx context.Context, in *pb.GetVideoEventsReq) (*pb.GetVideoEventsResp, error) {
 	r := &pb.GetVideoEventsResp{}
 	var err error
 	db := common.DB{}
