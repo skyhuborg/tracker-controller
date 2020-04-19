@@ -58,8 +58,8 @@ var env Environment
 func ServeStatic() {
 	fs := http.FileServer(http.Dir(env.StaticDataPath))
 	http.Handle("/", fs)
-	log.Println("tracker-ui static path:" + strconv.Itoa(env.StaticDataPort) + "...")
-	log.Println("tracker-ui static listening on port:" + strconv.Itoa(env.StaticDataPort) + "...")
+	log.Println("tracker-controller static path:" + strconv.Itoa(env.StaticDataPort) + "...")
+	log.Println("tracker-controller static listening on port:" + strconv.Itoa(env.StaticDataPort) + "...")
 	http.ListenAndServe(":"+strconv.Itoa(env.StaticDataPort), nil)
 }
 
@@ -77,18 +77,16 @@ func main() {
     grpcServer.TlsKey = env.GrpcTlsKey
     grpcServer.ConfigFile = env.ConfigFile
     grpcServer.DbPath = env.DbPath
-	
-
 
 	go grpcServer.Start()
 
 	if env.FrontendEnabled {
-		log.Println("tracker-ui spa path:" + env.FrontendPath)
-		log.Println("tracker-ui spa listening on port:" + strconv.Itoa(env.FrontendPort) + "...")
+		log.Println("tracker-controller spa path:" + env.FrontendPath)
+		log.Println("tracker-controller spa listening on port:" + strconv.Itoa(env.FrontendPort) + "...")
 		go controller.HttpServeSPA(":"+strconv.Itoa(env.FrontendPort), env.FrontendPath)
 
 	} else {
-		log.Println("tracker-ui disabled")
+		log.Println("tracker-controller disabled")
 	}
 	go ServeStatic()
 

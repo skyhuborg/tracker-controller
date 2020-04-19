@@ -134,39 +134,20 @@ func (s *Server) Start() {
 
 func (s *Server) SetConfig(ctx context.Context, in *pb.SetConfigReq) (*pb.SetConfigResp, error) {
 	r := pb.SetConfigResp{}
-	config := common.Config{}
-
-	err := config.Open("/uaptn/etc/node.ini")
-
-	if err != nil {
-		log.Printf("Error: failed opening configuration")
-	}
-
-	defer config.Close()
 
 	grpclog.Printf("SetConfig called\n")
-	config.SetConfigFromPb(in.Config)
-
-	config.Save()
+	s.config.SetConfigFromPb(in.Config)
+	s.config.Save()
 
 	return &r, nil
 }
 
 func (s *Server) GetIsConfigured(ctx context.Context, in *pb.GetIsConfiguredReq) (*pb.GetIsConfiguredResp, error) {
 	r := pb.GetIsConfiguredResp{}
-	config := common.Config{}
-
-	err := config.Open("/uaptn/etc/node.ini")
-
-	if err != nil {
-		log.Printf("Error: failed opening configuration")
-	}
-
-	defer config.Close()
 
 	grpclog.Printf("GetIsConfigured called\n")
 
-	r.IsConfigured = config.GetIsConfigured()
+	r.IsConfigured = s.config.GetIsConfigured()
 
 	return &r, nil
 }
@@ -174,37 +155,18 @@ func (s *Server) GetIsConfigured(ctx context.Context, in *pb.GetIsConfiguredReq)
 func (s *Server) GetConfig(ctx context.Context, in *pb.GetConfigReq) (*pb.GetConfigResp, error) {
 	r := pb.GetConfigResp{}
 
-	config := common.Config{}
-
-	err := config.Open("/uaptn/etc/node.ini")
-
-	if err != nil {
-		log.Printf("Error: failed opening configuration")
-		return &r, err
-	}
-
-	defer config.Close()
-
 	grpclog.Printf("GetConfig called\n")
-	r.Config = config.GetConfigPb()
+
+	r.Config = s.config.GetConfigPb()
+
 	return &r, nil
 }
 
 func (s *Server) GetEvents(ctx context.Context, in *pb.GetEventsReq) (*pb.GetEventsResp, error) {
 	r := &pb.GetEventsResp{}
 	var err error
-	db := common.DB{}
 
-	err = db.Open(s.DbPath)
-
-	if err != nil {
-		grpclog.Printf("Error: %s\n")
-		return r, err
-	}
-
-	defer db.Close()
-
-	events, total, err := db.GetEvents(in.Limit)
+	events, total, err := s.db.GetEvents(in.Limit)
 
 	for _, e := range events {
 		ts, _ := ptypes.TimestampProto(e.CreatedAt)
@@ -225,18 +187,8 @@ func (s *Server) GetEvents(ctx context.Context, in *pb.GetEventsReq) (*pb.GetEve
 func (s *Server) GetVideoEvents(ctx context.Context, in *pb.GetVideoEventsReq) (*pb.GetVideoEventsResp, error) {
 	r := &pb.GetVideoEventsResp{}
 	var err error
-	db := common.DB{}
 
-	err = db.Open(s.DbPath)
-
-	if err != nil {
-		grpclog.Printf("Error: %s\n")
-		return r, err
-	}
-
-	defer db.Close()
-
-	events, total, err := db.GetVideoEvents(in.Limit)
+	events, total, err := s.db.GetVideoEvents(in.Limit)
 
 	for _, e := range events {
 		ts, _ := ptypes.TimestampProto(e.CreatedAt)
