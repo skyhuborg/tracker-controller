@@ -9,7 +9,7 @@ dev-arm-build:
     script: 
         - docker build -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME -f build/$CI_PROJECT_NAME.Dockerfile  .
     tags:
-        - xavier
+        - cgaspard-runner
     only:
         - develop
 
@@ -20,7 +20,7 @@ master-arm-build:
     script: 
         - docker build -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:latest -f build/$CI_PROJECT_NAME.Dockerfile  .
     tags:
-        - xavier
+        - cgaspard-runner
     only:
         - master
 
@@ -32,7 +32,7 @@ dev-arm-deploy:
         - docker login $DOCKER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASSWORD
         - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME
     tags:
-        - xavier
+        - cgaspard-runner
     only:
         - develop
     when: always
@@ -48,7 +48,7 @@ arm-images-master:
         - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
         - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH:latest
     tags:
-        - xavier
+        - cgaspard-runner
     only:
         - master
     when: manual
