@@ -34,7 +34,7 @@ import (
 	"os"
 	"strconv"
 	"time"
-
+	"fmt"
 	"gitlab.com/uaptn/uaptn/internal/controller"
 )
 
@@ -43,10 +43,9 @@ type Environment struct {
     GrpcEnableTls    bool
     GrpcTlsKey       string
     GrpcTlsCert      string
-	FrontendEnabled  bool
-	FrontendPath     string
-	FrontendPort     int
-	FrontendGRPCPort int
+	HttpEnabled      bool
+	HttpPath         string
+	HttpPort         int
 	StaticDataPath   string
 	StaticDataPort   int
 	DbPath           string
@@ -58,9 +57,9 @@ var env Environment
 func ServeStatic() {
 	fs := http.FileServer(http.Dir(env.StaticDataPath))
 	http.Handle("/", fs)
-	log.Println("tracker-controller static path:" + strconv.Itoa(env.StaticDataPort) + "...")
-	log.Println("tracker-controller static listening on port:" + strconv.Itoa(env.StaticDataPort) + "...")
-	http.ListenAndServe(":"+strconv.Itoa(env.StaticDataPort), nil)
+	log.Printf("tracker-controller static path: %s\n", env.StaticDataPath)
+	log.Printf("tracker-controller static listening on port: %d\n", env.StaticDataPort)
+	http.ListenAndServe(fmt.Sprintf(":%d", env.StaticDataPort), nil)
 }
 
 func main() {
@@ -80,10 +79,10 @@ func main() {
 
 	go grpcServer.Start()
 
-	if env.FrontendEnabled {
-		log.Println("tracker-controller spa path:" + env.FrontendPath)
-		log.Println("tracker-controller spa listening on port:" + strconv.Itoa(env.FrontendPort) + "...")
-		go controller.HttpServeSPA(":"+strconv.Itoa(env.FrontendPort), env.FrontendPath)
+	if env.HttpEnabled {
+		log.Printf("tracker-controller spa path: %s\n", env.HttpPath)
+		log.Printf("tracker-controller spa listening on port: %d\n", env.HttpPort)
+		go controller.HttpServeSPA(fmt.Sprintf(":%d", env.HttpPort), env.HttpPath)
 
 	} else {
 		log.Println("tracker-controller disabled")
@@ -98,32 +97,32 @@ func main() {
 func parseConfig() {
 
 	/// Name of the command line arguments we accept
-	paramFrontendEnabled := "frontend-enabled"
-	paramFrontendPath := "frontend-path"
-	paramFrontendPort := "frontend-port"
-	paramFrontendGrpcPort := "frontend-grpc-port"
+	paramHttpEnabled := "http-enabled"
+	paramHttpPath := "http-path"
+	paramHttpPort := "http-port"
+	paramGrpcListenPort := "grpc-listen-port"
 	paramStaticDataPath := "static-file-path"
 	paramStaticDataPort := "static-file-port"
 	paramConfigFile := "config-file"
 	paramDbPath := "db-path"
 
 	/// Pull environment variables
-	envFrontendEnabled := os.Getenv(paramFrontendEnabled)
-	envFrontendPath := os.Getenv(paramFrontendPath)
-	envFontendPort := os.Getenv(paramFrontendPort)
-	envFrontEndGrpcPort := os.Getenv(paramFrontendGrpcPort)
+	envHttpEnabled := os.Getenv(paramHttpEnabled)
+	envHttpPath := os.Getenv(paramHttpPath)
+	envFontendPort := os.Getenv(paramHttpPort)
+	envGrpcListenPort := os.Getenv(paramGrpcListenPort)
 
-	envStaticDataPath := os.Getenv(paramFrontendPath)
-	envStaticDataPort := os.Getenv(paramFrontendPort)
+	envStaticDataPath := os.Getenv(paramHttpPath)
+	envStaticDataPort := os.Getenv(paramHttpPort)
 
 	envDbPath := os.Getenv(paramDbPath)
 	envConfigFile := os.Getenv(paramConfigFile)
 
 	/// Check for commandline variables
-	flag.BoolVar(&env.FrontendEnabled, paramFrontendEnabled, true, "Enable / Disable the http frontend")
-	flag.StringVar(&env.FrontendPath, paramFrontendPath, "/app/frontend", "Path to the frontend")
-	flag.IntVar(&env.FrontendPort, paramFrontendPort, 8080, "Port for the front end UI")
-	flag.IntVar(&env.FrontendGRPCPort, paramFrontendGrpcPort, 8088, "Port for the for the GRPC used by the front end UI")
+	flag.BoolVar(&env.HttpEnabled, paramHttpEnabled, true, "Enable / Disable the http frontend")
+	flag.StringVar(&env.HttpPath, paramHttpPath, "/app/frontend", "Path to the frontend")
+	flag.IntVar(&env.HttpPort, paramHttpPort, 8080, "Port for the front end UI")
+	flag.IntVar(&env.GrpcListenPort, paramGrpcListenPort, 8088, "Port for the for the Grpc used by the front end UI")
 
 	flag.StringVar(&env.StaticDataPath, paramStaticDataPath, "/uaptn/data/", "Path to the data folder")
 	flag.IntVar(&env.StaticDataPort, paramStaticDataPort, 3000, "Port for the data folder http server")
@@ -133,25 +132,25 @@ func parseConfig() {
 	flag.Parse()
 
 	/// Override the command line args with env variables
-	if len(envFrontendEnabled) > 0 {
-		tempFrontendEnabled, err0 := strconv.ParseBool(envFrontendEnabled)
+	if len(envHttpEnabled) > 0 {
+		tempHttpEnabled, err0 := strconv.ParseBool(envHttpEnabled)
 		if err0 == nil {
-			env.FrontendEnabled = tempFrontendEnabled
+			env.HttpEnabled = tempHttpEnabled
 		}
 	}
-	if len(envFrontendPath) > 0 {
-		env.FrontendPath = envFrontendPath
+	if len(envHttpPath) > 0 {
+		env.HttpPath = envHttpPath
 	}
 	if len(envFontendPort) > 0 {
-		tempFrontendPort, err1 := strconv.ParseInt(envFontendPort, 10, 32)
+		tempHttpPort, err1 := strconv.ParseInt(envFontendPort, 10, 32)
 		if err1 == nil {
-			env.FrontendPort = int(tempFrontendPort)
+			env.HttpPort = int(tempHttpPort)
 		}
 	}
-	if len(envFrontEndGrpcPort) > 0 {
-		tempFrontendGrpcPort, err2 := strconv.ParseInt(envFrontEndGrpcPort, 10, 32)
+	if len(envGrpcListenPort) > 0 {
+		tempGrpcListenPort, err2 := strconv.ParseInt(envGrpcListenPort, 10, 32)
 		if err2 == nil {
-			env.FrontendGRPCPort = int(tempFrontendGrpcPort)
+			env.GrpcListenPort = int(tempGrpcListenPort)
 		}
 	}
 	if len(envStaticDataPath) > 0 {
@@ -162,7 +161,6 @@ func parseConfig() {
 		if err3 == nil {
 			env.StaticDataPort = int(tempStaticDataPort)
 		}
-
 	}
 	if len(envDbPath) > 0 {
 		env.DbPath = envDbPath

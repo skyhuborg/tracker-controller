@@ -54,8 +54,8 @@ type Server struct {
 	DbPath     string
 
 
-	config *common.Config
-    db    *common.DB
+	config common.Config
+    db    common.DB
 }
 
 func (s *Server) OpenConfig() (err error) {
@@ -78,7 +78,7 @@ func (s *Server) ConnectDb() (error) {
 		return err
 	}
 
-	s.db = &db
+	s.db = db
 	return nil
 }
 
