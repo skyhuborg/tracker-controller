@@ -32,7 +32,7 @@ import (
 	"fmt"
 	"gitlab.com/uaptn/uaptn/internal/controller"
 	"log"
-	"net/http"
+	//"net/http"
 	"os"
 	"strconv"
 	"time"
@@ -54,14 +54,6 @@ type Environment struct {
 
 var env Environment
 
-func ServeStatic() {
-	fs := http.FileServer(http.Dir(env.StaticDataPath))
-	http.Handle("/", fs)
-	log.Printf("tracker-controller static path: %s\n", env.StaticDataPath)
-	log.Printf("tracker-controller static listening on port: %d\n", env.StaticDataPort)
-	http.ListenAndServe(fmt.Sprintf(":%d", env.StaticDataPort), nil)
-}
-
 func main() {
 	var (
 		grpcServer controller.Server
@@ -76,6 +68,8 @@ func main() {
 	grpcServer.TlsKey = env.GrpcTlsKey
 	grpcServer.ConfigFile = env.ConfigFile
 	grpcServer.DbPath = env.DbPath
+	grpcServer.StaticDataPath = env.StaticDataPath
+	grpcServer.StaticDataPort = env.StaticDataPort
 
 	go grpcServer.Start()
 
@@ -87,7 +81,6 @@ func main() {
 	} else {
 		log.Println("tracker-controller disabled")
 	}
-	go ServeStatic()
 
 	for {
 		time.Sleep(30 * time.Second)

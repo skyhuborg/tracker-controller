@@ -52,6 +52,9 @@ type Server struct {
 	TlsCert    string
 	ConfigFile string
 	DbPath     string
+	StaticDataPath string
+	StaticDataPort int
+
 
 	config common.Config
 	db     common.DB
@@ -81,6 +84,18 @@ func (s *Server) ConnectDb() error {
 	return nil
 }
 
+func (s *Server) StartFileServer() error {
+	log.Printf("Service '%s' on :%d\n", s.StaticDataPath, s.StaticDataPort)
+	fs := http.FileServer(http.Dir(s.StaticDataPath))
+	http.Handle("/", fs)
+
+	err := http.ListenAndServe(fmt.Sprintf(":%d", s.StaticDataPort), nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return nil
+}
+
 func (s *Server) Close() {
 	s.config.Close()
 	s.db.Close()
@@ -104,6 +119,9 @@ func (s *Server) Start() {
 		log.Printf("ConnectDb failed with: %s\n", err)
 		return
 	}
+
+
+	go s.StartFileServer()
 
 	s.Handle = grpc.NewServer()
 
@@ -187,14 +205,16 @@ func (s *Server) GetVideoEvents(ctx context.Context, in *pb.GetVideoEventsReq) (
 	r := &pb.GetVideoEventsResp{}
 	var err error
 
+	log.Println("GetVideoEvents called")
 	events, total, err := s.db.GetVideoEvents(in.Limit)
 
+	log.Println(events)
 	for _, e := range events {
 		ts, _ := ptypes.TimestampProto(e.CreatedAt)
 		base := filepath.Base(e.Uri)
 		uri := fmt.Sprintf("http://localhost:3000/video/%s", base)
 		base = filepath.Base(e.Thumbnail)
-		thumb := fmt.Sprintf("http://localhost:3000/thumb/%s", base)
+		thumb := fmt.Sprintf("http://localhost:3000/thumbnail/%s", base)
 		r.Video = append(r.Video, &pb.VideoEvent{EventId: e.EventId, CreatedAt: ts, Uri: uri, Thumb: thumb})
 	}
 

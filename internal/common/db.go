@@ -184,7 +184,8 @@ func (db *DB) GetEvents(limit int32) (events []Event, count int32, err error) {
 
 func (db *DB) GetVideoEvents(limit int32) (events []VideoEvent, count int32, err error) {
 	db.h.Table("video_events").Count(&count)
-	db.h.Limit(limit).Find(&events)
+	log.Println(db.h.Limit(limit).Find(&events).Error)
+	log.Println(events)
 	return
 }
 
