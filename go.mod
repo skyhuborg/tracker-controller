@@ -1,4 +1,4 @@
-module gitlab.com/uaptn/uaptn
+module gitlab.com/uaptn/tracker-controller
 
 go 1.13
 

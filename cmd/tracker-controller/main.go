@@ -30,7 +30,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"gitlab.com/uaptn/uaptn/internal/controller"
+	"gitlab.com/uaptn/tracker-controller/internal/controller"
 	"log"
 	//"net/http"
 	"os"

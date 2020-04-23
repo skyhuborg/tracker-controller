@@ -34,7 +34,7 @@ import (
 	"github.com/golang/protobuf/ptypes"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	pb "gitlab.com/uaptn/proto-tracker-controller-go"
-	"gitlab.com/uaptn/uaptn/internal/common"
+	"gitlab.com/uaptn/tracker-controller/internal/common"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
 	"log"
