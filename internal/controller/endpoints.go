@@ -35,6 +35,7 @@ import (
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	pb "gitlab.com/uaptn/proto-tracker-controller-go"
 	"gitlab.com/uaptn/tracker-controller/internal/common"
+	"gitlab.com/uaptn/trackerdb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
 	"log"
@@ -57,7 +58,7 @@ type Server struct {
 
 
 	config common.Config
-	db     common.DB
+	db     trackerdb.DB
 }
 
 func (s *Server) OpenConfig() (err error) {
@@ -71,7 +72,7 @@ func (s *Server) OpenConfig() (err error) {
 }
 
 func (s *Server) ConnectDb() error {
-	db := common.DB{}
+	db := trackerdb.DB{}
 
 	err := db.Open(s.DbPath)
 

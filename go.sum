@@ -82,6 +82,8 @@ github.com/stretchr/testify v1.5.1 h1:nOGnQDM7FYENwehXlg/kFVnos3rEvtKTjRvOWSzb6H
 github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
 gitlab.com/uaptn/proto-tracker-controller-go v0.0.0-20200419024926-6c431d8eafd2 h1:CxVcj9QcOwtHxLzkB6yyMndqS5UoVeUk3L8Q7v7Ey2k=
 gitlab.com/uaptn/proto-tracker-controller-go v0.0.0-20200419024926-6c431d8eafd2/go.mod h1:hOdwx8wPGx8el7Zqmkf7rAfwj9FWUDSX4hE2yNBkfBg=
+gitlab.com/uaptn/trackerdb v0.0.0-20200423024602-3dde0495ff22 h1:6cayifLjKKt/tYMlYv8i8SyRc8kEaP+Jl9r34UuBVyo=
+gitlab.com/uaptn/trackerdb v0.0.0-20200423024602-3dde0495ff22/go.mod h1:3E5NXLZyeU3228M5Y8Vrb469gRxnQtx/LWPDSh9ICso=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2 h1:VklqNMn3ovrHsnt90PveolxSbWFaJdECFbxSq0Mqo2M=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
