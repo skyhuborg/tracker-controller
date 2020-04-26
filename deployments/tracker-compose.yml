@@ -1,111 +1,111 @@
 version: '3.3'
 
-# /uaptn - root folder
-# /uaptn/db - database folder for tracker
-# /uaptn/data - other data folder
-# /uaptn/etc - configuration folder
+# /skyhub - root folder
+# /skyhub/db - database folder for tracker
+# /skyhub/data - other data folder
+# /skyhub/etc - configuration folder
 
 services:
-  uaptn-tracker:
-    container_name: uaptn-tracker
-    image: uaptn/tracker:develop
+  skyhub-tracker:
+    container_name: skyhub-tracker
+    image: skyhuborg/tracker:develop
     restart: always
     networks:
-      - uaptn-network
+      - skyhub-network
     environment:
-      upload-server-addr: trackerapi-dev.uaptn.com:443
-      trackerd-server-addr: trackerapi-dev.uaptn.com:443
-      gpsd-addr: uaptn-gpsd:2947
+      upload-server-addr: trackerapi-dev.skyhub.com:443
+      trackerd-server-addr: trackerapi-dev.skyhub.com:443
+      gpsd-addr: skyhub-gpsd:2947
     volumes:
       - type: volume
-        source: uaptn-data
-        target: /uaptn/data
+        source: skyhub-data
+        target: /skyhub/data
         volume:
           nocopy: true
       - type: volume
-        source: uaptn-db
-        target: /uaptn/db
+        source: skyhub-db
+        target: /skyhub/db
         volume:
           nocopy: true          
       - type: volume
-        source: uaptn-etc
-        target: /uaptn/etc
+        source: skyhub-etc
+        target: /skyhub/etc
         volume:
           nocopy: true          
-  uaptn-tracker-ui-backend:
-    container_name: uaptn-tracker-backend
-    image: uaptn/tracker-ui-backend:develop
+  skyhub-tracker-ui-backend:
+    container_name: skyhub-tracker-backend
+    image: skyhuborg/tracker-ui-backend:develop
     restart: always
     ports: 
      - 8088:8088
     networks:
-      - uaptn-network
+      - skyhub-network
     volumes:
       - type: volume
-        source: uaptn-data
-        target: /uaptn/data
+        source: skyhub-data
+        target: /skyhub/data
         volume:
           nocopy: true
       - type: volume
-        source: uaptn-db
-        target: /uaptn/db
+        source: skyhub-db
+        target: /skyhub/db
         volume:
           nocopy: true          
       - type: volume
-        source: uaptn-etc
-        target: /uaptn/etc
+        source: skyhub-etc
+        target: /skyhub/etc
         volume:
           nocopy: true          
-  uaptn-tracker-ui:
-    container_name: uaptn-tracker-ui
-    image: uaptn/tracker-ui:develop
+  skyhub-tracker-ui:
+    container_name: skyhub-tracker-ui
+    image: skyhub/tracker-ui:develop
     restart: always
     ports: 
      - 80:80
     networks:
-      - uaptn-network
+      - skyhub-network
     volumes:
       - type: volume
-        source: uaptn-data
-        target: /uaptn/data
+        source: skyhub-data
+        target: /skyhub/data
         volume:
           nocopy: true
       - type: volume
-        source: uaptn-db
-        target: /uaptn/db
+        source: skyhub-db
+        target: /skyhub/db
         volume:
           nocopy: true
       - type: volume
-        source: uaptn-etc
-        target: /uaptn/etc
+        source: skyhub-etc
+        target: /skyhub/etc
         volume:
           nocopy: true
-  uaptn-gpsd:
-    container_name: uaptn-gpsd
-    image: uaptn/gpsd:develop
+  skyhub-gpsd:
+    container_name: skyhub-gpsd
+    image: skyhub/gpsd:develop
     restart: always
     networks:
-      - uaptn-network
+      - skyhub-network
     privileged: true
     devices:
       - /dev/ttyAMA0:/dev/ttyAMA0 
       - /dev/ttyACM0:/dev/ttyACM0 
     command: -D2 /dev/ttyACM0 
 networks:
-  uaptn-network:
+  skyhub-network:
 volumes:
-  uaptn-data:
-  uaptn-db:
-  uaptn-etc:
+  skyhub-data:
+  skyhub-db:
+  skyhub-etc:
 
 # TRACKER
 # Usage of /app/tracker:
 #   -config-file string
-#     	path to config file (default "/uaptn/etc/tracker.yml")
+#     	path to config file (default "/skyhub/etc/tracker.yml")
 #   -data-path string
-#     	path to data directory (default "/uaptn/data")
+#     	path to data directory (default "/skyhub/data")
 #   -db-path string
-#     	path to database file (default "/uaptn/db/tracker.db")
+#     	path to database file (default "/skyhub/db/tracker.db")
 #   -debug
 #     	Enable debugging
 #   -trackerd-server-addr string
@@ -116,7 +116,7 @@ volumes:
 # TRACKER UI BACKEND
 # Usage of cmd/bin/amd64/darwin/tracker-ui-backend:
 #   -db-path string
-#         Path to sqlite db (default "/uaptn/db/tracker.db")
+#         Path to sqlite db (default "/skyhub/db/tracker.db")
 #   -frontend-enabled
 #         Enable / Disable the http frontend (default true)
 #   -frontend-grpc-port int
@@ -126,6 +126,6 @@ volumes:
 #   -frontend-port int
 #         Port for the front end UI (default 8080)
 #   -static-file-path string
-#         Path to the data folder (default "/uaptn/data/")
+#         Path to the data folder (default "/skyhub/data/")
 #   -static-file-port int
 #         Port for the data folder http server (default 3000)

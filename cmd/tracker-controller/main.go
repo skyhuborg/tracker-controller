@@ -30,7 +30,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"gitlab.com/uaptn/tracker-controller/internal/controller"
+	"gitlab.com/skyhuborg/tracker-controller/internal/controller"
 	"log"
 	//"net/http"
 	"os"
@@ -117,10 +117,10 @@ func parseConfig() {
 	flag.IntVar(&env.HttpPort, paramHttpPort, 8080, "Port for the front end UI")
 	flag.IntVar(&env.GrpcListenPort, paramGrpcListenPort, 8088, "Port for the for the Grpc used by the front end UI")
 
-	flag.StringVar(&env.StaticDataPath, paramStaticDataPath, "/uaptn/data/", "Path to the data folder")
+	flag.StringVar(&env.StaticDataPath, paramStaticDataPath, "/skyhub/data/", "Path to the data folder")
 	flag.IntVar(&env.StaticDataPort, paramStaticDataPort, 3000, "Port for the data folder http server")
-	flag.StringVar(&env.DbPath, paramDbPath, "/uaptn/db/tracker.db", "Path to sqlite db")
-	flag.StringVar(&env.ConfigFile, paramConfigFile, "/uaptn/etc/tracker.yml", "path to config file")
+	flag.StringVar(&env.DbPath, paramDbPath, "/skyhub/db/tracker.db", "Path to sqlite db")
+	flag.StringVar(&env.ConfigFile, paramConfigFile, "/skyhub/etc/tracker.yml", "path to config file")
 
 	flag.Parse()
 

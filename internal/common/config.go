@@ -31,7 +31,7 @@ import (
 	"errors"
 	"github.com/Pallinder/go-randomdata"
 	"github.com/google/uuid"
-	pb "gitlab.com/uaptn/proto-tracker-controller-go"
+	pb "gitlab.com/skyhuborg/proto-tracker-controller-go"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"

@@ -1,4 +1,4 @@
-module gitlab.com/uaptn/tracker-controller
+module gitlab.com/skyhuborg/tracker-controller
 
 go 1.13
 
@@ -22,8 +22,6 @@ require (
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/rs/cors v1.7.0 // indirect
 	github.com/stretchr/testify v1.5.1 // indirect
-	gitlab.com/uaptn/proto-tracker-controller-go v0.0.0-20200419024926-6c431d8eafd2
-	gitlab.com/uaptn/trackerdb v0.0.0-20200423024602-3dde0495ff22
 	golang.org/x/crypto v0.0.0-20200406173513-056763e48d71 // indirect
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e // indirect
 	golang.org/x/sys v0.0.0-20200409092240-59c9f1ba88fa // indirect
