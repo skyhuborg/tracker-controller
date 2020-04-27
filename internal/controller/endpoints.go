@@ -207,7 +207,8 @@ func (s *Server) GetVideoEvents(ctx context.Context, in *pb.GetVideoEventsReq) (
 	var err error
 
 	log.Println("GetVideoEvents called")
-	events, total, err := s.db.GetVideoEvents(in.Limit)
+
+	events, total, err := s.db.GetVideoEvents(in.Limit, in.Page)
 
 	for _, e := range events {
 		ts, _ := ptypes.TimestampProto(e.CreatedAt)
