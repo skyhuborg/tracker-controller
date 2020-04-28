@@ -1,7 +1,7 @@
 MIT License
 -----------
 
-Copyright (c) 2020 Steve McDaniel
+Copyright (c) 2020 Steve McDaniel, Corey Gaspard
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
