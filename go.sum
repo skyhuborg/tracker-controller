@@ -96,6 +96,8 @@ gitlab.com/skyhuborg/trackerdb v0.0.0-20200426015422-6f96d6493ff8 h1:yOherqRv3Dy
 gitlab.com/skyhuborg/trackerdb v0.0.0-20200426015422-6f96d6493ff8/go.mod h1:Xghyf1PlqB43ZOGnw/4qs8wfpK3sSTIVX70rn2TGRAE=
 gitlab.com/skyhuborg/trackerdb v0.0.0-20200427034311-0937dff2272c h1:P4oJ35VPsbED1IEl4AqElBbUw+YruKGavBgE5Dma8Fk=
 gitlab.com/skyhuborg/trackerdb v0.0.0-20200427034311-0937dff2272c/go.mod h1:Xghyf1PlqB43ZOGnw/4qs8wfpK3sSTIVX70rn2TGRAE=
+gitlab.com/skyhuborg/trackerdb v0.0.0-20200427045237-972633ec1a69 h1:f2Br29TVjnH3g76AXPvIyXsiRRCHF3Pbt6HDB2TPbb8=
+gitlab.com/skyhuborg/trackerdb v0.0.0-20200427045237-972633ec1a69/go.mod h1:Xghyf1PlqB43ZOGnw/4qs8wfpK3sSTIVX70rn2TGRAE=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2 h1:VklqNMn3ovrHsnt90PveolxSbWFaJdECFbxSq0Mqo2M=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=

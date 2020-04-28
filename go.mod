@@ -23,7 +23,7 @@ require (
 	github.com/rs/cors v1.7.0 // indirect
 	github.com/stretchr/testify v1.5.1 // indirect
 	gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200425140518-be96a7fc7e7e
-	gitlab.com/skyhuborg/trackerdb v0.0.0-20200427034311-0937dff2272c
+	gitlab.com/skyhuborg/trackerdb v0.0.0-20200427045237-972633ec1a69
 	golang.org/x/crypto v0.0.0-20200423211502-4bdfaf469ed5 // indirect
 	golang.org/x/net v0.0.0-20200425230154-ff2c4b7c35a0 // indirect
 	golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f // indirect
