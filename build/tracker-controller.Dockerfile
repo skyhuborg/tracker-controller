@@ -8,8 +8,8 @@ RUN make tracker-controller
 # production stage
 FROM nginx:stable-alpine as production-stage
 RUN apk add --no-cache sqlite
-RUN mkdir -p /uaptn/data
-COPY --from=build-stage /app/cmd/bin/arm64/linux/tracker-controller /uaptn/tracker-controller
+RUN mkdir -p /skyhub/data
+COPY --from=build-stage /app/cmd/bin/arm64/linux/tracker-controller /skyhub/tracker-controller
 EXPOSE 8088
-WORKDIR /uaptn
-CMD ["/uaptn/tracker-controller"]
+WORKDIR /skyhub
+CMD ["/skyhub/tracker-controller"]

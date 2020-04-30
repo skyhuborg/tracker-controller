@@ -33,9 +33,9 @@ import (
 	_ "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
-	pb "gitlab.com/uaptn/proto-tracker-controller-go"
-	"gitlab.com/uaptn/tracker-controller/internal/common"
-	"gitlab.com/uaptn/trackerdb"
+	pb "gitlab.com/skyhuborg/proto-tracker-controller-go"
+	"gitlab.com/skyhuborg/tracker-controller/internal/common"
+	"gitlab.com/skyhuborg/trackerdb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
 	"log"
@@ -207,7 +207,8 @@ func (s *Server) GetVideoEvents(ctx context.Context, in *pb.GetVideoEventsReq) (
 	var err error
 
 	log.Println("GetVideoEvents called")
-	events, total, err := s.db.GetVideoEvents(in.Limit)
+
+	events, total, err := s.db.GetVideoEvents(in.Limit, in.Page)
 
 	for _, e := range events {
 		ts, _ := ptypes.TimestampProto(e.CreatedAt)
