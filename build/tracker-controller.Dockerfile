@@ -1,6 +1,6 @@
 FROM ubuntu:focal
 
-ENV PACKAGES="sqlite3 x264 nano wget ca-certificates make gcc git"
+ENV PACKAGES="git nano make sqlite3 gcc x264 wget ca-certificates pkg-config zip g++ zlib1g-dev unzip python python3-numpy tar"
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes ${PACKAGES}
 
