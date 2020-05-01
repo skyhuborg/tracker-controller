@@ -1,6 +1,6 @@
 FROM ubuntu:focal
 
-ENV PACKAGES="sqlite3 x264 nano wget"
+ENV PACKAGES="sqlite3 x264 nano wget ca-certificates"
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes ${PACKAGES}
 
