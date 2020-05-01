@@ -17,12 +17,13 @@ COPY go.sum /build/go.sum
 RUN cd /build && go mod download
 ADD . /build/
 RUN cd /build && \
-    mkdir -p /uaptn/db && \
-    mkdir -p /uaptn/etc && \
+    mkdir -p /skyhub/db && \
+    mkdir -p /skyhub/etc && \
+    mkdir -p /skyhub/data && \
     cp /app/cmd/bin/arm64/linux/tracker-controller /skyhub/tracker-controller \
-    ldd /uaptn/tracker-controller
-WORKDIR /uaptn
-CMD ["/uaptn/tracker-controller"]
+    ldd /skyhub/tracker-controller
+WORKDIR /skyhub
+CMD ["/skyhub/tracker-controller"]
 
 # FROM golang:1.14.1-alpine as build-stage
 # RUN apk add --no-cache git build-base
