@@ -20,7 +20,7 @@ RUN cd /build && \
     mkdir -p /skyhub/db && \
     mkdir -p /skyhub/etc && \
     mkdir -p /skyhub/data && \
-    cp build/cmd/bin/arm64/linux/tracker-controller /skyhub/tracker-controller && \
+    cp cmd/bin/arm64/linux/tracker-controller /skyhub/tracker-controller && \
     cd /skyhub && rm -rf /build && \
     ldd /skyhub/tracker-controller
 WORKDIR /skyhub
