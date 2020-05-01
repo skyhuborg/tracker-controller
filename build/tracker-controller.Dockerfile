@@ -1,6 +1,6 @@
 FROM ubuntu:focal
 
-ENV PACKAGES="sqlite3 x264 nano wget ca-certificates"
+ENV PACKAGES="sqlite3 x264 nano wget ca-certificates make gcc"
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes ${PACKAGES}
 
@@ -20,6 +20,7 @@ RUN cd /build && \
     mkdir -p /skyhub/db && \
     mkdir -p /skyhub/etc && \
     mkdir -p /skyhub/data && \
+    make tracker-controller && \
     cp cmd/bin/arm64/linux/tracker-controller /skyhub/tracker-controller && \
     cd /skyhub && rm -rf /build && \
     ldd /skyhub/tracker-controller
