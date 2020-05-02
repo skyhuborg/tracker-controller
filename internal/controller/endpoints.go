@@ -30,6 +30,12 @@ package controller
 import (
 	"context"
 	"fmt"
+	"log"
+	"math"
+	"net/http"
+	"os"
+	"path/filepath"
+
 	_ "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
@@ -38,24 +44,18 @@ import (
 	"gitlab.com/skyhuborg/trackerdb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
-	"log"
-	"math"
-	"net/http"
-	"os"
-	"path/filepath"
 )
 
 type Server struct {
-	Handle     *grpc.Server
-	ListenPort int
-	EnableTls  bool
-	TlsKey     string
-	TlsCert    string
-	ConfigFile string
-	DbPath     string
+	Handle         *grpc.Server
+	ListenPort     int
+	EnableTls      bool
+	TlsKey         string
+	TlsCert        string
+	ConfigFile     string
+	DbPath         string
 	StaticDataPath string
 	StaticDataPort int
-
 
 	config common.Config
 	db     trackerdb.DB
@@ -120,7 +120,6 @@ func (s *Server) Start() {
 		log.Printf("ConnectDb failed with: %s\n", err)
 		return
 	}
-
 
 	go s.StartFileServer()
 
@@ -213,9 +212,11 @@ func (s *Server) GetVideoEvents(ctx context.Context, in *pb.GetVideoEventsReq) (
 	for _, e := range events {
 		ts, _ := ptypes.TimestampProto(e.CreatedAt)
 		base := filepath.Base(e.Uri)
-		uri := fmt.Sprintf("http://localhost:3000/video/%s", base)
+		// uri := fmt.Sprintf("http://localhost:3000/video/%s", base)
+		uri := base
 		base = filepath.Base(e.Thumbnail)
-		thumb := fmt.Sprintf("http://localhost:3000/thumbnail/%s", base)
+		// thumb := fmt.Sprintf("http://localhost:3000/thumbnail/%s", base)
+		thumb := base
 		r.Video = append(r.Video, &pb.VideoEvent{EventId: e.EventId, CreatedAt: ts, Uri: uri, Thumb: thumb})
 	}
 
