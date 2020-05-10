@@ -22,11 +22,11 @@ require (
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/rs/cors v1.7.0 // indirect
 	github.com/stretchr/testify v1.5.1 // indirect
-	gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200508033827-50b581099e72
+	gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200510134017-345ffdcaa695
 	gitlab.com/skyhuborg/trackerdb v0.0.0-20200427045237-972633ec1a69
 	golang.org/x/crypto v0.0.0-20200423211502-4bdfaf469ed5 // indirect
 	golang.org/x/net v0.0.0-20200506145744-7e3656a0809f // indirect
-	golang.org/x/sys v0.0.0-20200501145240-bc7a7d42d5c3 // indirect
+	golang.org/x/sys v0.0.0-20200509044756-6aff5f38e54f // indirect
 	golang.org/x/text v0.3.2 // indirect
 	google.golang.org/genproto v0.0.0-20200507105951-43844f6eee31 // indirect
 	google.golang.org/grpc v1.29.1
