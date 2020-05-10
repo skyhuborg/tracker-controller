@@ -1,0 +1,14 @@
+configured: true
+uuid: 6027fa28-9173-11ea-bf47-acde48001122
+nodename: Crestbloom
+hostname: ""
+camera:
+- name: armcrest
+  enabled: false
+  location: Home
+  uri: rtps://192.168.1.64:554
+  username: skyhub
+  password: skyhub123
+storage:
+- name: ""
+  location: ""

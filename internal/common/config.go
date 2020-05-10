@@ -29,23 +29,22 @@ package common
 
 import (
 	"errors"
-	"github.com/Pallinder/go-randomdata"
-	"github.com/google/uuid"
-	pb "gitlab.com/skyhuborg/proto-tracker-controller-go"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/Pallinder/go-randomdata"
+	"github.com/google/uuid"
+	pb "gitlab.com/skyhuborg/proto-tracker-controller-go"
+	"gopkg.in/yaml.v2"
 )
 
 type Camera struct {
 	Name     string `yaml:"name"`
 	Enabled  bool   `yaml:"enabled"`
 	Location string `yaml:"location"`
-	Protocol string `yaml:"protocol"`
-	Ip       string `yaml:"ip"`
-	Port     int32  `yaml:"port"`
+	Uri      string `yaml:"uri"`
 	Username string `yaml:"username"`
 	Password string `yaml:"password"`
 }
@@ -119,9 +118,7 @@ func (c *Config) GetConfigPb() *pb.Config {
 			Name:     c.Name,
 			Enabled:  c.Enabled,
 			Location: c.Location,
-			Protocol: c.Protocol,
-			Ip:       c.Ip,
-			Port:     c.Port,
+			Uri:      c.Uri,
 			Username: c.Username,
 			Password: c.Password})
 	}
@@ -143,9 +140,7 @@ func (c *Config) SetConfigFromPb(config *pb.Config) {
 			Name:     camera.Name,
 			Enabled:  camera.Enabled,
 			Location: camera.Location,
-			Protocol: camera.Protocol,
-			Ip:       camera.Ip,
-			Port:     camera.Port,
+			Uri:      camera.Uri,
 			Username: camera.Username,
 			Password: camera.Password})
 	}

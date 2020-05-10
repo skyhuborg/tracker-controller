@@ -30,8 +30,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"gitlab.com/skyhuborg/tracker-controller/internal/controller"
 	"log"
+
+	"gitlab.com/skyhuborg/tracker-controller/internal/controller"
+
 	//"net/http"
 	"os"
 	"strconv"
