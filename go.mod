@@ -1,6 +1,6 @@
 module gitlab.com/skyhuborg/tracker-controller
 
-go 1.13
+go 1.14
 
 require (
 	github.com/Pallinder/go-randomdata v1.2.0
@@ -13,7 +13,7 @@ require (
 	github.com/google/uuid v1.1.1
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/improbable-eng/grpc-web v0.12.0
-	github.com/jinzhu/gorm v1.9.12
+	github.com/jinzhu/gorm v1.9.12 // indirect
 	github.com/jinzhu/now v1.1.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/lib/pq v1.4.0 // indirect
@@ -22,9 +22,9 @@ require (
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/rs/cors v1.7.0 // indirect
 	github.com/stretchr/testify v1.5.1 // indirect
-	gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200510134017-345ffdcaa695
+	gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200514002715-7f64cb87ab72
 	gitlab.com/skyhuborg/trackerdb v0.0.0-20200427045237-972633ec1a69
-	golang.org/x/crypto v0.0.0-20200423211502-4bdfaf469ed5 // indirect
+	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37
 	golang.org/x/net v0.0.0-20200506145744-7e3656a0809f // indirect
 	golang.org/x/sys v0.0.0-20200509044756-6aff5f38e54f // indirect
 	golang.org/x/text v0.3.2 // indirect

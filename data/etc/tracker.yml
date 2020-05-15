@@ -1,12 +1,14 @@
 configured: true
-uuid: 6027fa28-9173-11ea-bf47-acde48001122
-nodename: Crestbloom
-hostname: ""
+uuid: ""
+nodename: CGLAPTOP
+hostname: CGLAPTOP
+username: cgaspard@gmail.com
+password: $2a$04$g9qaTayGhTj7EnIZX/dgTOCwTx03zz2miURBvqERCqKpDlMoEILC6
 camera:
-- name: armcrest
-  enabled: false
-  location: Home
-  uri: rtps://192.168.1.64:554
+- name: amcrest
+  enabled: true
+  location: Houston
+  uri: rstp://192.168.1.64:554
   username: skyhub
   password: skyhub123
 storage:

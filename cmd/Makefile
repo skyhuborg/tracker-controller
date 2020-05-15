@@ -17,4 +17,4 @@ prebuild:
 	mkdir -p bin/arm64/linux bin/amd64/linux bin/amd64/windows bin/amd64/darwin
 
 tracker-controller: prebuild
-	GOOS=$(OS_NAME) GOARCH=$(ARCH) go build $(LDFLAGS) -o bin/$(ARCH)/$(OS_NAME)/tracker-controller tracker-controller/*.go 
+	GO111MODULE=on GOOS=$(OS_NAME) GOFLAGS=-mod=vendor GOARCH=$(ARCH) go build $(LDFLAGS) -o bin/$(ARCH)/$(OS_NAME)/tracker-controller tracker-controller/*.go 

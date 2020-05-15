@@ -2,7 +2,7 @@
 MIT License
 -----------
 
-Copyright (c) 2020 Steve McDaniel
+Copyright (c) 2020 Steve McDaniel, Corey Gaspard
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
@@ -42,6 +42,7 @@ import (
 	pb "gitlab.com/skyhuborg/proto-tracker-controller-go"
 	"gitlab.com/skyhuborg/tracker-controller/internal/common"
 	"gitlab.com/skyhuborg/trackerdb"
+	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
 )
@@ -159,6 +160,19 @@ func (s *Server) SetConfig(ctx context.Context, in *pb.SetConfigReq) (*pb.SetCon
 	return &r, nil
 }
 
+func (s *Server) Login(ctx context.Context, in *pb.LoginReq) (*pb.LoginResp, error) {
+	resp := pb.LoginResp{}
+	conf := s.config.GetConfigPb()
+	success := comparePasswords(conf.Password, in.Password)
+	if in.Username == conf.Username && success {
+		resp.Success = true
+	} else {
+		resp.Success = false
+		resp.Message = "Invalid Username or Password"
+	}
+	return &resp, nil
+}
+
 func (s *Server) GetIsConfigured(ctx context.Context, in *pb.GetIsConfiguredReq) (*pb.GetIsConfiguredResp, error) {
 	r := pb.GetIsConfiguredResp{}
 
@@ -175,6 +189,8 @@ func (s *Server) GetConfig(ctx context.Context, in *pb.GetConfigReq) (*pb.GetCon
 	grpclog.Printf("GetConfig called\n")
 
 	r.Config = s.config.GetConfigPb()
+	r.Config.Password = ""
+	r.Config.PasswordAgain = ""
 
 	return &r, nil
 }
@@ -229,4 +245,18 @@ func (s *Server) GetVideoEvents(ctx context.Context, in *pb.GetVideoEventsReq) (
 	r.Total = total
 
 	return r, err
+}
+
+func comparePasswords(hashedPwd string, plainPwd string) bool {
+	// Since we'll be getting the hashed password from the DB it
+	// will be a string so we'll need to convert it to a byte slice
+	var bytePass = []byte(plainPwd)
+	byteHash := []byte(hashedPwd)
+	err := bcrypt.CompareHashAndPassword(byteHash, bytePass)
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+
+	return true
 }

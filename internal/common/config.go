@@ -37,6 +37,7 @@ import (
 	"github.com/Pallinder/go-randomdata"
 	"github.com/google/uuid"
 	pb "gitlab.com/skyhuborg/proto-tracker-controller-go"
+	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/yaml.v2"
 )
 
@@ -59,6 +60,8 @@ type Settings struct {
 	Uuid       string `yaml:"uuid"`
 	NodeName   string `yaml:"nodename"`
 	Hostname   string `yaml:"hostname"`
+	Username   string `yaml:"username"`
+	Password   string `yaml:"password"`
 	Camera     []Camera
 	Storage    []Storage
 }
@@ -112,6 +115,8 @@ func (c *Config) GetConfigPb() *pb.Config {
 	config.Hostname = c.s.Hostname
 	config.NodeName = c.s.NodeName
 	config.Configured = c.s.Configured
+	config.Username = c.s.Username
+	config.Password = c.s.Password
 
 	for _, c := range c.s.Camera {
 		config.Camera = append(config.Camera, &pb.CameraConfig{
@@ -154,6 +159,8 @@ func (c *Config) SetConfigFromPb(config *pb.Config) {
 	s.Uuid = config.Uuid
 	s.Hostname = config.Hostname
 	s.NodeName = config.NodeName
+	s.Username = config.Username
+	s.Password = hashAndSalt(config.Password)
 	s.Configured = true
 
 	c.s = s
@@ -251,4 +258,20 @@ func (c *Config) Open(uri string) (err error) {
 }
 
 func (c *Config) Close() {
+}
+
+func hashAndSalt(pwd string) string {
+	var pwdb = []byte(pwd)
+	// Use GenerateFromPassword to hash & salt pwd
+	// MinCost is just an integer constant provided by the bcrypt
+	// package along with DefaultCost & MaxCost.
+	// The cost can be any value you want provided it isn't lower
+	// than the MinCost (4)
+	hash, err := bcrypt.GenerateFromPassword(pwdb, bcrypt.MinCost)
+	if err != nil {
+		log.Println(err)
+	}
+	// GenerateFromPassword returns a byte slice so we need to
+	// convert the bytes to a string and return it
+	return string(hash)
 }
