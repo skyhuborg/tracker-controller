@@ -1,4 +1,4 @@
-<p align="center"><a href="https://skyhub.org" target="_blank" rel="noopener noreferrer"><img width="300" src="https://wordpress.skyhub.org/wp-content/uploads/2020/04/basic-file-1-768x349.png" alt="Sky Hub logo"></a></p>
+<p align="center"><a href="https://skyhub.org" target="_blank" rel="noopener noreferrer"><img width="300" src="https://skyhub.org/assets/images/vector-file-side-by-side-small-1.svg" alt="Sky Hub logo"></a></p>
 
 <p align="center">
   <a href="http://skyhub.org"><img src="https://img.shields.io/badge/license-MIT-brightgreen" alt="License"></a>
