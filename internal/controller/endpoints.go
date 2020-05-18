@@ -35,6 +35,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 
 	_ "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
@@ -44,7 +45,6 @@ import (
 	"gitlab.com/skyhuborg/tracker-controller/internal/common"
 	"gitlab.com/skyhuborg/trackerdb"
 	"golang.org/x/crypto/bcrypt"
-	"google.golang.org/genproto/googleapis/type/datetime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
 )
@@ -68,7 +68,7 @@ type Server struct {
 type Auth struct {
 	Token    string
 	Username string
-	Expires  datetime.DateTime
+	Expires  time.Time
 }
 
 func (s *Server) OpenConfig() (err error) {
@@ -172,15 +172,19 @@ func (s *Server) SetConfig(ctx context.Context, in *pb.SetConfigReq) (*pb.SetCon
 func (s *Server) Login(ctx context.Context, in *pb.LoginReq) (*pb.LoginResp, error) {
 	resp := pb.LoginResp{}
 
+	/// Logging in with an Auth Token
 	if len(in.Authtoken) > 0 {
 		// Check in s.AuthTokens
+		curDate := time.Now()
 		for _, a := range s.AuthTokens {
-			if a.Token == in.Authtoken {
+			/// Token is a match and it is not expired
+			if a.Token == in.Authtoken && curDate.Before(a.Expires) {
 				resp.Success = true
 				resp.Authtoken = in.Authtoken
 				return &resp, nil
 			}
 		}
+		/// The token is bad or expired, return the response
 		resp.Success = false
 		resp.Authtoken = ""
 		resp.Authexpired = true
@@ -196,8 +200,9 @@ func (s *Server) Login(ctx context.Context, in *pb.LoginReq) (*pb.LoginResp, err
 		}
 		resp.Success = true
 		resp.Authtoken = uuid.String()
-
-		authToken := Auth{Token: uuid.String(), Username: in.Username}
+		expDate := time.Now()
+		expDate = expDate.AddDate(0, 0, 7*2)
+		authToken := Auth{Token: uuid.String(), Username: in.Username, Expires: expDate}
 		s.AuthTokens = append(s.AuthTokens, authToken)
 	} else {
 		resp.Success = false
