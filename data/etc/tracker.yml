@@ -1,7 +1,7 @@
 configured: true
 uuid: ""
 nodename: NANO1
-hostname: NAN1
+hostname: NANO1
 username: team@skyhub.org
 password: $2a$04$UgFBV9yYxVkUV6Ut5gFk1OMx4rrNmUZ0.jcCjMw3IWibPhEMEGECi
 camera:
