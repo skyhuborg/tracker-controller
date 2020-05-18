@@ -35,9 +35,11 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 
 	_ "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
+	guuid "github.com/google/uuid"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	pb "gitlab.com/skyhuborg/proto-tracker-controller-go"
 	"gitlab.com/skyhuborg/tracker-controller/internal/common"
@@ -57,9 +59,16 @@ type Server struct {
 	DbPath         string
 	StaticDataPath string
 	StaticDataPort int
+	AuthTokens     []Auth
 
 	config common.Config
 	db     trackerdb.DB
+}
+
+type Auth struct {
+	Token    string
+	Username string
+	Expires  time.Time
 }
 
 func (s *Server) OpenConfig() (err error) {
@@ -162,10 +171,39 @@ func (s *Server) SetConfig(ctx context.Context, in *pb.SetConfigReq) (*pb.SetCon
 
 func (s *Server) Login(ctx context.Context, in *pb.LoginReq) (*pb.LoginResp, error) {
 	resp := pb.LoginResp{}
+
+	/// Logging in with an Auth Token
+	if len(in.Authtoken) > 0 {
+		// Check in s.AuthTokens
+		curDate := time.Now()
+		for _, a := range s.AuthTokens {
+			/// Token is a match and it is not expired
+			if a.Token == in.Authtoken && curDate.Before(a.Expires) {
+				resp.Success = true
+				resp.Authtoken = in.Authtoken
+				return &resp, nil
+			}
+		}
+		/// The token is bad or expired, return the response
+		resp.Success = false
+		resp.Authtoken = ""
+		resp.Authexpired = true
+		return &resp, nil
+	}
+
 	conf := s.config.GetConfigPb()
 	success := comparePasswords(conf.Password, in.Password)
 	if in.Username == conf.Username && success {
+		uuid, err := guuid.NewRandom()
+		if err != nil {
+			log.Println("Error generatoring auth token")
+		}
 		resp.Success = true
+		resp.Authtoken = uuid.String()
+		expDate := time.Now()
+		expDate = expDate.AddDate(0, 0, 7*2)
+		authToken := Auth{Token: uuid.String(), Username: in.Username, Expires: expDate}
+		s.AuthTokens = append(s.AuthTokens, authToken)
 	} else {
 		resp.Success = false
 		resp.Message = "Invalid Username or Password"
