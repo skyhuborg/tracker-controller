@@ -1,14 +1,14 @@
 configured: true
 uuid: ""
-nodename: CGLAPTOP
-hostname: CGLAPTOP
-username: cgaspard@gmail.com
-password: $2a$04$g9qaTayGhTj7EnIZX/dgTOCwTx03zz2miURBvqERCqKpDlMoEILC6
+nodename: NANO1
+hostname: NAN1
+username: team@skyhub.org
+password: $2a$04$UgFBV9yYxVkUV6Ut5gFk1OMx4rrNmUZ0.jcCjMw3IWibPhEMEGECi
 camera:
 - name: amcrest
   enabled: true
-  location: Houston
-  uri: rstp://192.168.1.64:554
+  location: ""
+  uri: rtsp://192.168.1.65:554
   username: skyhub
   password: skyhub123
 storage:
