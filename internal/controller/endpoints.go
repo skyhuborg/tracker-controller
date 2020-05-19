@@ -58,6 +58,7 @@ type Server struct {
 	ConfigFile     string
 	DbPath         string
 	StaticDataPath string
+	PipeFilePath   string
 	StaticDataPort int
 	AuthTokens     []Auth
 
@@ -166,7 +167,31 @@ func (s *Server) SetConfig(ctx context.Context, in *pb.SetConfigReq) (*pb.SetCon
 	s.config.SetConfigFromPb(in.Config)
 	s.config.Save()
 
+	writeToFile(s.PipeFilePath, "RESTART-TRACKER\n")
+
 	return &r, nil
+}
+
+func (s *Server) IssueCommand(ctx context.Context, in *pb.IssueCommandReq) (*pb.IssueCommandResp, error) {
+	resp := pb.IssueCommandResp{}
+
+	log.Printf("Executing command on host: %s\n", in.Command)
+	if isAuthenticated(in.Authtoken, s.AuthTokens) {
+		//_, err := s.PipeFile.WriteString(fmt.Sprintf("%s\n", in.Command))
+		log.Printf("Writing file %s\n", s.PipeFilePath)
+		err := writeToFile(s.PipeFilePath, in.Command)
+		if err != nil {
+			resp.Status = "failed"
+			resp.Message = err.Error()
+		} else {
+			resp.Status = "success"
+			resp.Message = "Success"
+		}
+		return &resp, nil
+	}
+	resp.Status = "failed"
+	resp.Message = fmt.Sprintf("Not Authorized Error: %s", in.Command)
+	return &resp, nil
 }
 
 func (s *Server) Login(ctx context.Context, in *pb.LoginReq) (*pb.LoginResp, error) {
@@ -174,21 +199,17 @@ func (s *Server) Login(ctx context.Context, in *pb.LoginReq) (*pb.LoginResp, err
 
 	/// Logging in with an Auth Token
 	if len(in.Authtoken) > 0 {
-		// Check in s.AuthTokens
-		curDate := time.Now()
-		for _, a := range s.AuthTokens {
-			/// Token is a match and it is not expired
-			if a.Token == in.Authtoken && curDate.Before(a.Expires) {
-				resp.Success = true
-				resp.Authtoken = in.Authtoken
-				return &resp, nil
-			}
+		if isAuthenticated(in.Authtoken, s.AuthTokens) {
+			resp.Success = true
+			resp.Authtoken = in.Authtoken
+			return &resp, nil
 		}
-		/// The token is bad or expired, return the response
+
 		resp.Success = false
 		resp.Authtoken = ""
 		resp.Authexpired = true
 		return &resp, nil
+
 	}
 
 	conf := s.config.GetConfigPb()
@@ -283,6 +304,40 @@ func (s *Server) GetVideoEvents(ctx context.Context, in *pb.GetVideoEventsReq) (
 	r.Total = total
 
 	return r, err
+}
+
+func writeToFile(filename string, data string) error {
+
+	_, err := os.Stat(filename)
+	var file *os.File
+	var fileerr error
+	if !os.IsNotExist(err) {
+		file, fileerr = os.OpenFile(filename, os.O_RDWR, os.ModeNamedPipe)
+	} else {
+		file, fileerr = os.Create(filename)
+	}
+
+	if fileerr != nil {
+		return fileerr
+	}
+	defer file.Close()
+
+	_, err = file.WriteString(data)
+	if err != nil {
+		return err
+	}
+	return file.Sync()
+}
+
+func isAuthenticated(authToken string, authTokens []Auth) bool {
+	curDate := time.Now()
+	for _, a := range authTokens {
+		/// Token is a match and it is not expired
+		if a.Token == authToken && curDate.Before(a.Expires) {
+			return true
+		}
+	}
+	return false
 }
 
 func comparePasswords(hashedPwd string, plainPwd string) bool {

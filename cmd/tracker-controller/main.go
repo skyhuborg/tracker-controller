@@ -52,6 +52,7 @@ type Environment struct {
 	StaticDataPort int
 	DbPath         string
 	ConfigFile     string
+	PipeFilePath   string
 }
 
 var env Environment
@@ -72,6 +73,7 @@ func main() {
 	grpcServer.DbPath = env.DbPath
 	grpcServer.StaticDataPath = env.StaticDataPath
 	grpcServer.StaticDataPort = env.StaticDataPort
+	grpcServer.PipeFilePath = env.PipeFilePath
 
 	go grpcServer.Start()
 
@@ -100,6 +102,7 @@ func parseConfig() {
 	paramStaticDataPort := "static-file-port"
 	paramConfigFile := "config-file"
 	paramDbPath := "db-path"
+	paramPipePath := "pipe-path"
 
 	/// Pull environment variables
 	envHttpEnabled := os.Getenv(paramHttpEnabled)
@@ -111,6 +114,7 @@ func parseConfig() {
 	envStaticDataPort := os.Getenv(paramHttpPort)
 
 	envDbPath := os.Getenv(paramDbPath)
+	envPipePath := os.Getenv(paramPipePath)
 	envConfigFile := os.Getenv(paramConfigFile)
 
 	/// Check for commandline variables
@@ -122,6 +126,7 @@ func parseConfig() {
 	flag.StringVar(&env.StaticDataPath, paramStaticDataPath, "/skyhub/data/", "Path to the data folder")
 	flag.IntVar(&env.StaticDataPort, paramStaticDataPort, 3000, "Port for the data folder http server")
 	flag.StringVar(&env.DbPath, paramDbPath, "/skyhub/db/tracker.db", "Path to sqlite db")
+	flag.StringVar(&env.PipeFilePath, paramPipePath, "/tmp/skyhub.pipe", "Path to named pipe file")
 	flag.StringVar(&env.ConfigFile, paramConfigFile, "/skyhub/etc/tracker.yml", "path to config file")
 
 	flag.Parse()
@@ -159,6 +164,10 @@ func parseConfig() {
 	}
 	if len(envDbPath) > 0 {
 		env.DbPath = envDbPath
+	}
+
+	if len(envPipePath) > 0 {
+		env.PipeFilePath = envPipePath
 	}
 
 	if len(envConfigFile) > 0 {

@@ -110,6 +110,10 @@ gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200516211250-51d126a2f
 gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200516211250-51d126a2fb6a/go.mod h1:h1tRGc0yZA+xT2OyAMTjJ7t7aWlBzPM1a/5p1BLW16M=
 gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200516224234-a7dbb141f633 h1:CnDrjxqmWi62LI/suTtOsHfFFzmbtcYrP4MBSkBg8pc=
 gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200516224234-a7dbb141f633/go.mod h1:h1tRGc0yZA+xT2OyAMTjJ7t7aWlBzPM1a/5p1BLW16M=
+gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200519195140-8a74111458e3 h1:xCY7wBH7yAqfz10HXT635KVHzOFKZxRbJBAHE0u3n0s=
+gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200519195140-8a74111458e3/go.mod h1:h1tRGc0yZA+xT2OyAMTjJ7t7aWlBzPM1a/5p1BLW16M=
+gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200519200536-c023bd8ac25c h1:iNHPbM/n0JYQz7kjGvwfgh96HZx9NNs7HQ4h0yHmHjQ=
+gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200519200536-c023bd8ac25c/go.mod h1:h1tRGc0yZA+xT2OyAMTjJ7t7aWlBzPM1a/5p1BLW16M=
 gitlab.com/skyhuborg/trackerdb v0.0.0-20200426015422-6f96d6493ff8 h1:yOherqRv3Dyn5FD76cjRSnlw3EBZ43EYdAPMRV1QAi8=
 gitlab.com/skyhuborg/trackerdb v0.0.0-20200426015422-6f96d6493ff8/go.mod h1:Xghyf1PlqB43ZOGnw/4qs8wfpK3sSTIVX70rn2TGRAE=
 gitlab.com/skyhuborg/trackerdb v0.0.0-20200427034311-0937dff2272c h1:P4oJ35VPsbED1IEl4AqElBbUw+YruKGavBgE5Dma8Fk=
