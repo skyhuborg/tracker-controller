@@ -2,7 +2,7 @@
 MIT License
 -----------
 
-Copyright (c) 2020 Steve McDaniel
+Copyright (c) 2020 Steve McDaniel, Corey Gaspard
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
@@ -137,8 +137,47 @@ func (c *Config) GetConfigPb() *pb.Config {
 	return &config
 }
 
+func (c *Config) GetConfigFromFile(uri string) (*pb.Config, error) {
+	config := pb.Config{}
+	uid, _ := uuid.NewUUID()
+	config.Uuid = uid.String()
+	config.NodeName = randomdata.SillyName()
+	config.Configured = false
+
+	var err error
+	var data []byte
+
+	if fileExists(uri) == false {
+		ok := touchFile(uri)
+
+		if ok == false {
+			err = errors.New("Failed creating config")
+			return nil, err
+		}
+	}
+
+	data, err = ioutil.ReadFile(uri)
+
+	if err != nil {
+		log.Println("Readfile failed: %s\n", err)
+		return nil, err
+	}
+
+	err = yaml.Unmarshal(data, &config)
+
+	if err != nil {
+		log.Println("unmarshal failed: %s\n", err)
+		return nil, err
+	}
+
+	c.uri = uri
+
+	return &config, nil
+}
+
 func (c *Config) SetConfigFromPb(config *pb.Config) {
 	s := Settings{}
+	c.SetDefaults()
 
 	for _, camera := range config.Camera {
 		s.Camera = append(s.Camera, Camera{
@@ -160,8 +199,8 @@ func (c *Config) SetConfigFromPb(config *pb.Config) {
 	s.Hostname = config.Hostname
 	s.NodeName = config.NodeName
 	s.Username = config.Username
+	s.Configured = config.Configured
 	s.Password = hashAndSalt(config.Password)
-	s.Configured = true
 
 	c.s = s
 
@@ -186,7 +225,7 @@ func (c *Config) SetConfigured(is_configured bool) {
    set default values
 */
 func (c *Config) SetDefaults() {
-	log.Println("setting defaults")
+	// log.Println("setting defaults")
 	uid, _ := uuid.NewUUID()
 	c.s.Uuid = uid.String()
 	c.s.NodeName = randomdata.SillyName()

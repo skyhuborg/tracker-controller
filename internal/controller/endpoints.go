@@ -244,12 +244,17 @@ func (s *Server) GetIsConfigured(ctx context.Context, in *pb.GetIsConfiguredReq)
 
 func (s *Server) GetConfig(ctx context.Context, in *pb.GetConfigReq) (*pb.GetConfigResp, error) {
 	r := pb.GetConfigResp{}
+	var err error
 
 	grpclog.Printf("GetConfig called\n")
 
-	r.Config = s.config.GetConfigPb()
+	r.Config, err = s.config.GetConfigFromFile(s.ConfigFile)
 	r.Config.Password = ""
 	r.Config.PasswordAgain = ""
+
+	if err != nil {
+		return nil, err
+	}
 
 	return &r, nil
 }

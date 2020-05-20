@@ -18,4 +18,3 @@ prebuild:
 
 tracker-controller: prebuild
 	GO111MODULE=on GOOS=$(OS_NAME) GOARCH=$(ARCH) go build -o bin/$(ARCH)/$(OS_NAME)/tracker-controller tracker-controller/*.go 
-	# GO111MODULE=on GOOS=$(OS_NAME) GOFLAGS=-mod=vendor GOARCH=$(ARCH) go build $(LDFLAGS) -o bin/$(ARCH)/$(OS_NAME)/tracker-controller tracker-controller/*.go 
