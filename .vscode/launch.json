@@ -16,6 +16,7 @@
                 "grpc-listen-port": "9090",
                 "db-path": "${workspaceFolder}/data/tracker.db",
                 "config-file": "${workspaceFolder}/data/etc/tracker.yml",
+                "pipe-path": "${workspaceFolder}/data/skyhub.pipe",
                 // "video-device": "0",
                 "upload-server-addr": "trackerd-dev.skyhub.org:443",
                 "trackerd-server-addr": "trackerapi-dev.skyhub.org:443",

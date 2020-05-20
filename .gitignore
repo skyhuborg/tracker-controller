@@ -3,3 +3,4 @@ data/video/*.mp4
 data/*.db
 vendor
 cmd/bin
+data/*.pipe
