@@ -22,7 +22,7 @@ require (
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/rs/cors v1.7.0 // indirect
 	github.com/stretchr/testify v1.5.1 // indirect
-	gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200519200536-c023bd8ac25c
+	gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200520213755-0a98a837d32e
 	gitlab.com/skyhuborg/trackerdb v0.0.0-20200428194408-64b3b4517d8a
 	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37
 	golang.org/x/net v0.0.0-20200513185701-a91f0712d120 // indirect
