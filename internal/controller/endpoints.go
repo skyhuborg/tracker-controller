@@ -179,7 +179,7 @@ func (s *Server) IssueCommand(ctx context.Context, in *pb.IssueCommandReq) (*pb.
 	if isAuthenticated(in.Authtoken, s.AuthTokens) {
 		//_, err := s.PipeFile.WriteString(fmt.Sprintf("%s\n", in.Command))
 		log.Printf("Writing file %s\n", s.PipeFilePath)
-		err := writeToFile(s.PipeFilePath, in.Command)
+		err := writeToFile(s.PipeFilePath, fmt.Sprintf("%s\n", in.Command))
 		if err != nil {
 			resp.Status = "failed"
 			resp.Message = err.Error()
