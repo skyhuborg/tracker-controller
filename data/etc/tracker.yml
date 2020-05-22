@@ -1,6 +1,6 @@
 configured: true
 uuid: 2808d706-9a4d-11ea-b2c9-acde48001122
-nodename: NAN01
+nodename: NAN012
 hostname: NAN01
 username: team@skyhub.org
 password: $2a$04$EQLOQXo8S.6q3Mze3DWYN.E6i8rSzYChwGDjsKjqZLCeCePv9XtsG
@@ -11,6 +11,7 @@ camera:
   uri: rtsp://192.168.1.64:554
   username: skyhub
   password: skyhub123
+  type: PTZ
 storage:
 - name: ""
   location: ""

@@ -48,6 +48,7 @@ type Camera struct {
 	Uri      string `yaml:"uri"`
 	Username string `yaml:"username"`
 	Password string `yaml:"password"`
+	Type     string `yaml:"type"`
 }
 
 type Storage struct {
@@ -186,7 +187,8 @@ func (c *Config) SetConfigFromPb(config *pb.Config) {
 			Location: camera.Location,
 			Uri:      camera.Uri,
 			Username: camera.Username,
-			Password: camera.Password})
+			Password: camera.Password,
+			Type:     camera.Type})
 	}
 
 	for _, storage := range config.Storage {
@@ -200,7 +202,16 @@ func (c *Config) SetConfigFromPb(config *pb.Config) {
 	s.NodeName = config.NodeName
 	s.Username = config.Username
 	s.Configured = config.Configured
-	s.Password = hashAndSalt(config.Password)
+	/// If the configuration doesn't have a password set, try to load it from previous configs
+	if config.Password == "" {
+		tempConfig, configErr := c.GetConfigFromFile(c.uri)
+		if configErr == nil && tempConfig.Password != "" {
+			s.Password = tempConfig.Password
+		}
+
+	} else {
+		s.Password = hashAndSalt(config.Password)
+	}
 
 	c.s = s
 
