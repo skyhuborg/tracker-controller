@@ -3,7 +3,7 @@ uuid: 2808d706-9a4d-11ea-b2c9-acde48001122
 nodename: NAN012
 hostname: NAN01
 username: team@skyhub.org
-password: $2a$04$EQLOQXo8S.6q3Mze3DWYN.E6i8rSzYChwGDjsKjqZLCeCePv9XtsG
+password: $2a$04$iTFZ38KXFqQ6JKZHF2EGVuIfqAsXnw7aDpQiLcdV2BrF2GHJKKDyS
 camera:
 - name: amcrest
   enabled: true

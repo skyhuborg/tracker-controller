@@ -12,6 +12,7 @@ require (
 	github.com/google/go-cmp v0.4.1 // indirect
 	github.com/google/uuid v1.1.1
 	github.com/gorilla/websocket v1.4.2 // indirect
+	github.com/hashicorp/mdns v1.0.3
 	github.com/improbable-eng/grpc-web v0.12.0
 	github.com/jinzhu/gorm v1.9.12 // indirect
 	github.com/jinzhu/now v1.1.1 // indirect
@@ -23,7 +24,7 @@ require (
 	github.com/rs/cors v1.7.0 // indirect
 	github.com/stretchr/testify v1.5.1 // indirect
 	gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200522140728-a218c6ed3550
-	gitlab.com/skyhuborg/trackerdb v0.0.0-20200428194408-64b3b4517d8a
+	gitlab.com/skyhuborg/trackerdb v0.0.0-20200524204148-cd511b0ddd5f
 	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37
 	golang.org/x/net v0.0.0-20200520182314-0ba52f642ac2 // indirect
 	golang.org/x/sys v0.0.0-20200519105757-fe76b779f299 // indirect
