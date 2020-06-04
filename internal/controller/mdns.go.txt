@@ -1,0 +1,76 @@
+
+// // // /*
+// // // MIT License
+// // // -----------
+
+// // // Copyright (c) 2020 Steve McDaniel, Corey Gaspard
+
+// // // Permission is hereby granted, free of charge, to any person
+// // // obtaining a copy of this software and associated documentation
+// // // files (the "Software"), to deal in the Software without
+// // // restriction, including without limitation the rights to use,
+// // // copy, modify, merge, publish, distribute, sublicense, and/or sell
+// // // copies of the Software, and to permit persons to whom the
+// // // Software is furnished to do so, subject to the following
+// // // conditions:
+
+// // // The above copyright notice and this permission notice shall be
+// // // included in all copies or substantial portions of the Software.
+
+// // // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// // // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// // // OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// // // NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// // // HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// // // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// // // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// // // OTHER DEALINGS IN THE SOFTWARE.
+// // // */
+
+// package mdns
+
+// import (
+// 	"github.com/hashicorp/mdns"
+// )
+
+// // type Server struct {
+// // 	Handle         *grpc.Server
+// // 	ListenPort     int
+// // 	EnableTls      bool
+// // 	TlsKey         string
+// // 	TlsCert        string
+// // 	ConfigFile     string
+// // 	DbPath         string
+// // 	StaticDataPath string
+// // 	PipeFilePath   string
+// // 	StaticDataPort int
+// // 	AuthTokens     []Auth
+
+// // 	config common.Config
+// // 	db     trackerdb.DB
+// // }
+
+// func main {
+// 	// Setup our service export
+// 	host, _ := os.Hostname()
+// 	info := []string{"Sky Hub Tracker"}
+// 	service, _ := mdns.NewMDNSService(host, "_grpc._tcp", "", "", 8000, nil, info)
+
+
+// 	// Create the mDNS server, defer shutdown
+// 	server, _ := mdns.NewServer(&mdns.Config{Zone: service})
+// 	defer server.Shutdown()
+
+// 	// Make a channel for results and start listening
+// 	entriesCh := make(chan *mdns.ServiceEntry, 4)
+// 	go func() {
+// 		for entry := range entriesCh {
+// 			fmt.Printf("Got new entry: %v\n", entry)
+// 		}
+// 	}()
+
+// 	// Start the lookup
+// 	mdns.Lookup("_foobar._tcp", entriesCh)
+// 	close(entriesCh)
+
+// }

@@ -4,3 +4,4 @@ data/*.db
 vendor
 cmd/bin
 data/*.pipe
+__debug_bin
