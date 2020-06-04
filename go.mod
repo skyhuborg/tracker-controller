@@ -23,8 +23,9 @@ require (
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
+	github.com/oleksandr/bonjour v0.0.0-20160508152359-5dcf00d8b228
 	github.com/rs/cors v1.7.0 // indirect
-	github.com/shirou/gopsutil v2.20.4+incompatible // indirect
+	github.com/shirou/gopsutil v2.20.4+incompatible
 	github.com/stretchr/testify v1.5.1 // indirect
 	github.com/zcalusic/sysinfo v0.0.0-20200228145645-a159d7cc708b // indirect
 	gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200522140728-a218c6ed3550
