@@ -31,6 +31,7 @@ package main
 import (
 	"context"
 	"log"
+	"net"
 	"time"
 
 	"github.com/grandcat/zeroconf"
@@ -46,7 +47,11 @@ func main() {
 	entries := make(chan *zeroconf.ServiceEntry)
 	go func(results <-chan *zeroconf.ServiceEntry) {
 		for entry := range results {
-			log.Println(entry)
+			var ports []string
+			ports = append(ports, "555")
+			ports = append(ports, "554")
+			tcpGather(entry.HostName, entry.AddrIPv4[0].String(), ports)
+			//log.Println(entry)
 		}
 		log.Println("No more entries.")
 	}(entries)
@@ -59,6 +64,31 @@ func main() {
 	}
 
 	<-ctx.Done()
+}
+
+func tcpGather(name string, ip string, ports []string) map[string]string {
+	// check emqx 1883, 8083 port
+
+	results := make(map[string]string)
+	for _, port := range ports {
+		address := net.JoinHostPort(ip, port)
+		// 3 second timeout
+		conn, err := net.DialTimeout("tcp", address, 3*time.Second)
+		if err != nil {
+			results[port] = "failed"
+
+			// todo log handler
+		} else {
+			if conn != nil {
+				log.Printf("IP Camera %s found at Address:%s", name, address)
+				results[port] = "success"
+				_ = conn.Close()
+			} else {
+				results[port] = "failed"
+			}
+		}
+	}
+	return results
 }
 
 // package main
