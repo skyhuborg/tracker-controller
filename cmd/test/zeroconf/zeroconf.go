@@ -25,60 +25,96 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
+
 package main
 
 import (
+	"context"
 	"log"
-	"os"
-	"os/signal"
 	"time"
 
-	"github.com/oleksandr/bonjour"
+	"github.com/grandcat/zeroconf"
 )
 
 func main() {
-	resolver, err := bonjour.NewResolver(nil)
+	// Discover all services on the network (e.g. _workstation._tcp)
+	resolver, err := zeroconf.NewResolver(nil)
 	if err != nil {
-		log.Println("Failed to initialize resolver:", err.Error())
-		os.Exit(1)
+		log.Fatalln("Failed to initialize resolver:", err.Error())
 	}
 
-	results := make(chan *bonjour.ServiceEntry)
-
-	go func(results chan *bonjour.ServiceEntry, exitCh chan<- bool) {
-		for e := range results {
-			log.Printf("%s, %s - %s(%s):%d", e.Instance, e.ServiceRecord, e.AddrIPv4, e.AddrIPv6, e.Port)
-			// exitCh <- true
-			// time.Sleep(1e9)
-			// os.Exit(0)
+	entries := make(chan *zeroconf.ServiceEntry)
+	go func(results <-chan *zeroconf.ServiceEntry) {
+		for entry := range results {
+			log.Println(entry)
 		}
-	}(results, resolver.Exit)
+		log.Println("No more entries.")
+	}(entries)
 
-	err = resolver.Browse("_http._tcp", "local.", results)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*15)
+	defer cancel()
+	err = resolver.Browse(ctx, "_http._tcp", "local.", entries)
 	if err != nil {
-		log.Println("Failed to browse:", err.Error())
+		log.Fatalln("Failed to browse:", err.Error())
 	}
 
-	select {}
+	<-ctx.Done()
 }
 
-func register() {
-	s, err := bonjour.Register("Sky Hub", "_http._tcp", "", 9999, []string{"txtv=1", "app=test"}, nil)
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
+// package main
 
-	// Ctrl+C handling
-	handler := make(chan os.Signal, 1)
-	signal.Notify(handler, os.Interrupt)
-	for sig := range handler {
-		if sig == os.Interrupt {
-			s.Shutdown()
-			time.Sleep(1e9)
-			break
-		}
-	}
-}
+// import (
+// 	"log"
+// 	"os"
+// 	"os/signal"
+// 	"time"
+
+// 	"github.com/oleksandr/bonjour"
+// )
+
+// func main() {
+// 	resolver, err := bonjour.NewResolver(nil)
+// 	if err != nil {
+// 		log.Println("Failed to initialize resolver:", err.Error())
+// 		os.Exit(1)
+// 	}
+
+// 	results := make(chan *bonjour.ServiceEntry)
+
+// 	go func(results chan *bonjour.ServiceEntry, exitCh chan<- bool) {
+// 		for e := range results {
+// 			log.Printf("%s, %s - %s(%s):%d", e.Instance, e.ServiceRecord, e.AddrIPv4, e.AddrIPv6, e.Port)
+// 			// exitCh <- true
+// 			// time.Sleep(1e9)
+// 			// os.Exit(0)
+// 		}
+// 	}(results, resolver.Exit)
+
+// 	err = resolver.Browse("_http._tcp", "local.", results)
+// 	if err != nil {
+// 		log.Println("Failed to browse:", err.Error())
+// 	}
+
+// 	select {}
+// }
+
+// func register() {
+// 	s, err := bonjour.Register("Sky Hub", "_http._tcp", "", 9999, []string{"txtv=1", "app=test"}, nil)
+// 	if err != nil {
+// 		log.Fatalln(err.Error())
+// 	}
+
+// 	// Ctrl+C handling
+// 	handler := make(chan os.Signal, 1)
+// 	signal.Notify(handler, os.Interrupt)
+// 	for sig := range handler {
+// 		if sig == os.Interrupt {
+// 			s.Shutdown()
+// 			time.Sleep(1e9)
+// 			break
+// 		}
+// 	}
+// }
 
 // package main
 

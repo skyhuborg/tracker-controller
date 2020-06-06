@@ -19,10 +19,10 @@ func main() {
 	d, _ := disk.Partitions(false)
 	n, _ := net.Interfaces()
 
-	fmt.Println(h)
-	fmt.Println(v)
-	fmt.Println(c)
-	fmt.Println(l)
+	fmt.Printf("%s\n\n", h)
+	fmt.Printf("%s\n\n", v)
+	fmt.Printf("%s\n\n", c)
+	fmt.Printf("%s\n\n", l)
 	fmt.Printf("%s\n\n", d)
 	fmt.Printf("%s\n\n", n)
 
