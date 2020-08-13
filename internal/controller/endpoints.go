@@ -32,6 +32,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"net"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -42,6 +43,8 @@ import (
 	guuid "github.com/google/uuid"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	pb "gitlab.com/skyhuborg/proto-tracker-controller-go"
+	pbtd "gitlab.com/skyhuborg/proto-trackerd-go"
+
 	"gitlab.com/skyhuborg/tracker-controller/internal/common"
 	"gitlab.com/skyhuborg/trackerdb"
 	"golang.org/x/crypto/bcrypt"
@@ -51,6 +54,7 @@ import (
 
 type Server struct {
 	Handle         *grpc.Server
+	HandleTrackerd *grpc.Server
 	ListenPort     int
 	EnableTls      bool
 	TlsKey         string
@@ -135,8 +139,10 @@ func (s *Server) Start() {
 	go s.StartFileServer()
 
 	s.Handle = grpc.NewServer()
+	s.HandleTrackerd = grpc.NewServer()
 
 	pb.RegisterControllerServer(s.Handle, s)
+	pbtd.RegisterTrackerdServer(s.HandleTrackerd, s)
 
 	grpclog.SetLogger(log.New(os.Stdout, "tracker-controller: ", log.LstdFlags))
 
@@ -154,10 +160,19 @@ func (s *Server) Start() {
 		Handler: http.HandlerFunc(handler),
 	}
 
+	port := 9988
+	grpclog.Printf("Starting sensor relay server port %d", port)
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	if err != nil {
+		grpclog.Fatalf("failed to listen: %v", err)
+	}
+	go s.HandleTrackerd.Serve(lis)
+
 	grpclog.Printf("Starting server without TLS on port %d", s.ListenPort)
 	if err := httpServer.ListenAndServe(); err != nil {
 		grpclog.Fatalf("failed starting http server: %v", err)
 	}
+
 }
 
 func (s *Server) SetConfig(ctx context.Context, in *pb.SetConfigReq) (*pb.SetConfigResp, error) {
@@ -230,6 +245,11 @@ func (s *Server) Login(ctx context.Context, in *pb.LoginReq) (*pb.LoginResp, err
 		resp.Message = "Invalid Username or Password"
 	}
 	return &resp, nil
+}
+
+func (s *Server) AddSensor(ctx context.Context, in *pbtd.SensorReport) (*pbtd.SensorResponse, error) {
+	grpclog.Printf("Report received\n")
+	return &pbtd.SensorResponse{}, nil
 }
 
 func (s *Server) GetIsConfigured(ctx context.Context, in *pb.GetIsConfiguredReq) (*pb.GetIsConfiguredResp, error) {

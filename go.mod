@@ -39,6 +39,7 @@ require (
 	github.com/stretchr/testify v1.6.1 // indirect
 	github.com/zcalusic/sysinfo v0.0.0-20200228145645-a159d7cc708b // indirect
 	gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200522140728-a218c6ed3550
+	gitlab.com/skyhuborg/proto-trackerd-go v0.0.0-20200510134013-fa8dfaaba00b
 	gitlab.com/skyhuborg/trackerdb v0.0.0-20200524222958-f6a6ca270848
 	golang.org/x/crypto v0.0.0-20200604202706-70a84ac30bf9
 	golang.org/x/net v0.0.0-20200602114024-627f9648deb9 // indirect
