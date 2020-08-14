@@ -160,7 +160,7 @@ func (s *Server) Start() {
 		Handler: http.HandlerFunc(handler),
 	}
 
-	port := 9988
+	port := 8089
 	grpclog.Printf("Starting sensor relay server port %d", port)
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
