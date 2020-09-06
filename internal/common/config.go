@@ -63,6 +63,7 @@ type Settings struct {
 	Hostname   string `yaml:"hostname"`
 	Username   string `yaml:"username"`
 	Password   string `yaml:"password"`
+	License    bool   `yaml:"license"`
 	Camera     []Camera
 	Storage    []Storage
 }

@@ -65,6 +65,7 @@ type Server struct {
 	PipeFilePath   string
 	StaticDataPort int
 	AuthTokens     []Auth
+	SensorReport   pbtd.SensorReport
 
 	config common.Config
 	db     trackerdb.DB
@@ -175,6 +176,31 @@ func (s *Server) Start() {
 
 }
 
+// func (s *Server) TrackerStatusStream(
+// 	request *pb_hmi.DflyStatusRequest,
+// 	stream pb_hmi.Dfly_DflyStatusStreamServer) error {
+
+// 	done := make(chan bool)
+
+// 	go func() {
+// 		for {
+// 			reply, valid := s.status_q.Pop(true)
+// 			if !valid {
+// 				return
+// 			}
+
+// 			err := stream.SendMsg(reply)
+// 			if err != nil {
+// 				done <- true
+// 				return
+// 			}
+// 		}
+// 	}()
+
+// 	<-done
+// 	return nil
+// }
+
 func (s *Server) SetConfig(ctx context.Context, in *pb.SetConfigReq) (*pb.SetConfigResp, error) {
 	r := pb.SetConfigResp{}
 
@@ -247,10 +273,38 @@ func (s *Server) Login(ctx context.Context, in *pb.LoginReq) (*pb.LoginResp, err
 	return &resp, nil
 }
 
-func (s *Server) AddSensor(ctx context.Context, in *pbtd.SensorReport) (*pbtd.SensorResponse, error) {
+func (s *Server) AddSensor(ctx context.Context, in *pbtd.SensorReport) (*pbtd.SensorReportResponse, error) {
 	grpclog.Printf("Report received\n")
-	return &pbtd.SensorResponse{}, nil
+	s.SensorReport = *in
+	return &pbtd.SensorReportResponse{}, nil
 }
+
+func (s *Server) AddEvent(ctx context.Context, in *pbtd.Event) (*pbtd.EventResponse, error) {
+	return &pbtd.EventResponse{}, nil
+}
+func (s *Server) AddVideoEvent(ctx context.Context, in *pbtd.VideoEvent) (*pbtd.VideoEventResponse, error) {
+	return &pbtd.VideoEventResponse{}, nil
+}
+func (s *Server) Register(ctx context.Context, in *pbtd.TrackerInfo) (*pbtd.RegisterResponse, error) {
+	return &pbtd.RegisterResponse{}, nil
+}
+
+func (s *Server) GetSensorReport(ctx context.Context, in *pb.SensorReportReq) (*pb.SensorReport, error) {
+	grpclog.Printf("GetSensorReportCalled")
+	r := pb.SensorReport{}
+
+	r.LonLat.Lat = s.SensorReport.GPS_TPVReport.Lat
+	r.LonLat.Lon = s.SensorReport.GPS_TPVReport.Lon
+	r.Tracker.Uuid = s.SensorReport.Tracker.Uuid
+
+	return &r, nil
+}
+
+// func (s *Server) GetStatusReport(ctx context.Context, in *pb.GetStatusReportReq) (*pb.GetStatusReportResp, error) {
+// 	grpclog.Printf("GetStatusReportCalled")
+// 	r := pb.GetStatusReportResp{}
+// 	return &r, nil
+// }
 
 func (s *Server) GetIsConfigured(ctx context.Context, in *pb.GetIsConfiguredReq) (*pb.GetIsConfiguredResp, error) {
 	r := pb.GetIsConfiguredResp{}
