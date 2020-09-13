@@ -42,8 +42,8 @@ import (
 	guuid "github.com/google/uuid"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	pb "gitlab.com/skyhuborg/proto-tracker-controller-go"
-	"gitlab.com/skyhuborg/tracker-controller/internal/common"
-	"gitlab.com/skyhuborg/trackerdb"
+	"gitlab.com/skyhuborg/tracker/pkg/config"
+	"gitlab.com/skyhuborg/tracker/pkg/db"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
@@ -62,8 +62,8 @@ type Server struct {
 	StaticDataPort int
 	AuthTokens     []Auth
 
-	config common.Config
-	db     trackerdb.DB
+	config config.Config
+	db     db.DB
 }
 
 type Auth struct {
@@ -83,7 +83,7 @@ func (s *Server) OpenConfig() (err error) {
 }
 
 func (s *Server) ConnectDb() error {
-	db := trackerdb.DB{}
+	db := db.DB{}
 
 	err := db.Open(s.DbPath)
 
@@ -309,6 +309,10 @@ func (s *Server) GetVideoEvents(ctx context.Context, in *pb.GetVideoEventsReq) (
 	r.Total = total
 
 	return r, err
+}
+func (s *Server) GetSensorReport(ctx context.Context, in *pb.SensorReportReq) (*pb.SensorReport, error) {
+	r := &pb.SensorReport{}
+	return r, nil
 }
 
 func writeToFile(filename string, data string) error {
