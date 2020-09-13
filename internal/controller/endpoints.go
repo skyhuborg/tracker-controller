@@ -44,9 +44,8 @@ import (
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	pb "gitlab.com/skyhuborg/proto-tracker-controller-go"
 	pbtd "gitlab.com/skyhuborg/proto-trackerd-go"
-
-	"gitlab.com/skyhuborg/tracker-controller/internal/common"
-	"gitlab.com/skyhuborg/trackerdb"
+	"gitlab.com/skyhuborg/tracker/pkg/config"
+	"gitlab.com/skyhuborg/tracker/pkg/db"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
@@ -67,8 +66,8 @@ type Server struct {
 	AuthTokens     []Auth
 	SensorReport   pbtd.SensorReport
 
-	config common.Config
-	db     trackerdb.DB
+	config config.Config
+	db     db.DB
 }
 
 type Auth struct {
@@ -88,7 +87,7 @@ func (s *Server) OpenConfig() (err error) {
 }
 
 func (s *Server) ConnectDb() error {
-	db := trackerdb.DB{}
+	db := db.DB{}
 
 	err := db.Open(s.DbPath)
 
