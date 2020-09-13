@@ -1,0 +1,29 @@
+####################################################################
+#
+# Sky Hub self signed certificate configuration
+#
+####################################################################
+[req]
+days                   = 1825
+serial                 = 1
+distinguished_name     = skyhub_ca
+x509_extensions        = v3_ca
+prompt = no
+
+[skyhub_ca]
+countryName            = US
+stateOrProvinceName    = TX
+localityName           = HOUSTON
+organizationName       = Sky Hub Inc
+organizationalUnitName = IT
+commonName             = SKYHUB
+emailAddress           = team@skyhub.org
+
+[v3_ca]
+# The extentions to add to a self-signed cert
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid:always,issuer:always
+basicConstraints       = CA:TRUE
+keyUsage               = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment, keyAgreement, keyCertSign
+subjectAltName         = DNS:localhost, DNS:skyhub-tracker, DNS: skyhub-tracker.local, DNS: 127.0.0.1, email:team@skyhub.org
+issuerAltName          = issuer:copy
