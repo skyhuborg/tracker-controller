@@ -98,6 +98,8 @@ func parseConfig() {
 	paramHttpPath := "http-path"
 	paramHttpPort := "http-port"
 	paramGrpcListenPort := "grpc-listen-port"
+	paramGrpcTlsKey := "grpc-tls-key"
+	paramGrpcTlsCert := "grpc-tls-cert"
 	paramStaticDataPath := "static-file-path"
 	paramStaticDataPort := "static-file-port"
 	paramConfigFile := "config-file"
@@ -109,6 +111,8 @@ func parseConfig() {
 	envHttpPath := os.Getenv(paramHttpPath)
 	envFontendPort := os.Getenv(paramHttpPort)
 	envGrpcListenPort := os.Getenv(paramGrpcListenPort)
+	envGrpcTlsKey := os.Getenv(paramGrpcTlsKey)
+	envGrpcTlsCert := os.Getenv(paramGrpcTlsCert)
 
 	envStaticDataPath := os.Getenv(paramHttpPath)
 	envStaticDataPort := os.Getenv(paramHttpPort)
@@ -122,6 +126,8 @@ func parseConfig() {
 	flag.StringVar(&env.HttpPath, paramHttpPath, "/app/frontend", "Path to the frontend")
 	flag.IntVar(&env.HttpPort, paramHttpPort, 8080, "Port for the front end UI")
 	flag.IntVar(&env.GrpcListenPort, paramGrpcListenPort, 8088, "Port for the for the Grpc used by the front end UI")
+	flag.StringVar(&env.GrpcTlsKey, paramGrpcTlsKey, "/var/cert/service.pem", "Path to the certificate file")
+	flag.StringVar(&env.GrpcTlsCert, paramGrpcTlsCert, "/var/cert/service.key", "Path to the certificate key file")
 
 	flag.StringVar(&env.StaticDataPath, paramStaticDataPath, "/skyhub/data/", "Path to the data folder")
 	flag.IntVar(&env.StaticDataPort, paramStaticDataPort, 3000, "Port for the data folder http server")
@@ -152,6 +158,12 @@ func parseConfig() {
 		if err2 == nil {
 			env.GrpcListenPort = int(tempGrpcListenPort)
 		}
+	}
+	if len(envGrpcTlsKey) > 0 {
+		env.GrpcTlsKey = envGrpcTlsKey
+	}
+	if len(envGrpcTlsCert) > 0 {
+		env.GrpcTlsCert = envGrpcTlsCert
 	}
 	if len(envStaticDataPath) > 0 {
 		env.StaticDataPath = envStaticDataPath
