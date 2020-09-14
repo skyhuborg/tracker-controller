@@ -24,7 +24,7 @@ require (
 	github.com/shirou/gopsutil v2.20.8+incompatible
 	gitlab.com/skyhuborg/proto-tracker-controller-go v1.1.9
 	gitlab.com/skyhuborg/proto-trackerd-go v1.1.2
-	gitlab.com/skyhuborg/tracker v0.0.0-20200913132530-08b5a2aba8f4
+	gitlab.com/skyhuborg/tracker v0.0.0-20200913194455-e2466a18d17a
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208 // indirect
 	google.golang.org/grpc v1.32.0
