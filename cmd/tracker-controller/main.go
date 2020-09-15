@@ -122,7 +122,7 @@ func parseConfig() {
 	envConfigFile := os.Getenv(paramConfigFile)
 
 	/// Check for commandline variables
-	flag.BoolVar(&env.HttpEnabled, paramHttpEnabled, true, "Enable / Disable the http frontend")
+	flag.BoolVar(&env.HttpEnabled, paramHttpEnabled, false, "Enable / Disable the http frontend")
 	flag.StringVar(&env.HttpPath, paramHttpPath, "/app/frontend", "Path to the frontend")
 	flag.IntVar(&env.HttpPort, paramHttpPort, 8080, "Port for the front end UI")
 	flag.IntVar(&env.GrpcListenPort, paramGrpcListenPort, 8088, "Port for the for the Grpc used by the front end UI")

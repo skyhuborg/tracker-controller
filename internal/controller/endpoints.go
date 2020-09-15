@@ -291,11 +291,12 @@ func (s *Server) Register(ctx context.Context, in *pbtd.TrackerInfo) (*pbtd.Regi
 func (s *Server) GetSensorReport(ctx context.Context, in *pb.SensorReportReq) (*pb.SensorReport, error) {
 	grpclog.Printf("GetSensorReportCalled")
 	r := pb.SensorReport{}
-
+	r.LonLat = &pb.LonLat{}
+	r.Tracker = &pb.TrackerInfo{}
+	grpclog.Println(s.SensorReport)
 	r.LonLat.Lat = s.SensorReport.GPS_TPVReport.Lat
 	r.LonLat.Lon = s.SensorReport.GPS_TPVReport.Lon
 	r.Tracker.Uuid = s.SensorReport.Tracker.Uuid
-
 	return &r, nil
 }
 
