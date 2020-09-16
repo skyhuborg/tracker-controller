@@ -160,8 +160,10 @@ github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+
 github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
+github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
 github.com/stretchr/testify v1.6.1 h1:hDPOHmpOpP40lSULcqw7IrRb/u7w6RpDC9399XyoNd0=
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
+github.com/xfrr/goffmpeg v0.0.0-20200825100927-5550d238df5c/go.mod h1:fVs4qpwtgjOHD31cTmdHppcr/6vD8QHrAVAu2jTSVFI=
 gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200806234841-24f34697934e h1:aL8iOIAqXUL7V4EkKiW/O7PCaYtmCQBlYqKsn1vc0sM=
 gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200806234841-24f34697934e/go.mod h1:h1tRGc0yZA+xT2OyAMTjJ7t7aWlBzPM1a/5p1BLW16M=
 gitlab.com/skyhuborg/proto-tracker-controller-go v0.0.0-20200806234841-24f34697934e/go.mod h1:h1tRGc0yZA+xT2OyAMTjJ7t7aWlBzPM1a/5p1BLW16M=
@@ -169,6 +171,8 @@ gitlab.com/skyhuborg/proto-tracker-controller-go v1.1.9 h1:QKBgLtoWCu97I8DC6UvY6
 gitlab.com/skyhuborg/proto-tracker-controller-go v1.1.9 h1:QKBgLtoWCu97I8DC6UvY6Zw2QIWNIg5G1TP3A6f0FdQ=
 gitlab.com/skyhuborg/proto-tracker-controller-go v1.1.9/go.mod h1:h1tRGc0yZA+xT2OyAMTjJ7t7aWlBzPM1a/5p1BLW16M=
 gitlab.com/skyhuborg/proto-tracker-controller-go v1.1.9/go.mod h1:h1tRGc0yZA+xT2OyAMTjJ7t7aWlBzPM1a/5p1BLW16M=
+gitlab.com/skyhuborg/proto-tracker-controller-go v1.2.0 h1:THVeSI4CefaSpCj65T22xfVb0u5JagyiKc7SGMpXQGE=
+gitlab.com/skyhuborg/proto-tracker-controller-go v1.2.0/go.mod h1:h1tRGc0yZA+xT2OyAMTjJ7t7aWlBzPM1a/5p1BLW16M=
 gitlab.com/skyhuborg/proto-trackerd-go v0.0.0-20200510134013-fa8dfaaba00b h1:orAAV2VCqmZH2YlS4y+n6v4GWaHqiMucMCFNW55KcDU=
 gitlab.com/skyhuborg/proto-trackerd-go v0.0.0-20200510134013-fa8dfaaba00b/go.mod h1:h1onI1kUhuqN52dRGfrXPm6D8262MGcSbYNV6c0+w9k=
 gitlab.com/skyhuborg/proto-trackerd-go v0.0.0-20200510134013-fa8dfaaba00b/go.mod h1:h1onI1kUhuqN52dRGfrXPm6D8262MGcSbYNV6c0+w9k=
@@ -180,6 +184,8 @@ gitlab.com/skyhuborg/tracker v0.0.0-20200913132530-08b5a2aba8f4 h1:rguhwRX3IASYK
 gitlab.com/skyhuborg/tracker v0.0.0-20200913132530-08b5a2aba8f4/go.mod h1:EYfbijoLDj9zNTp756yskznuCOJrHBESEPlwNqSxVSA=
 gitlab.com/skyhuborg/tracker v0.0.0-20200913194455-e2466a18d17a h1:F6wr5EfKRLnpYlxyf1/K3Yq5oxOibrlwTA5y1LIc64U=
 gitlab.com/skyhuborg/tracker v0.0.0-20200913194455-e2466a18d17a/go.mod h1:hv73QX6rffN5UfosKiWTlP7+uVLcXsjXchKydyAtgBk=
+gitlab.com/skyhuborg/tracker v0.0.0-20200916023432-4cb7bafe8c5a h1:OuakzinIY2cXX3Ft62IgpBjXRTUSDSfwGvFTkhPGlic=
+gitlab.com/skyhuborg/tracker v0.0.0-20200916023432-4cb7bafe8c5a/go.mod h1:A7luIJNBPWdxBZWMV5Par3v2IXBmcpCKWLiyzZQtnqI=
 gitlab.com/skyhuborg/trackerd v0.0.0-20200912135000-6d44ed5ec6d6/go.mod h1:SS4BBYDzBXphZ0XD0RabIVd4XZtrF06nqWfivStwoK8=
 gitlab.com/skyhuborg/trackerd v0.0.0-20200913184748-fa810aa3cb2c/go.mod h1:SS4BBYDzBXphZ0XD0RabIVd4XZtrF06nqWfivStwoK8=
 gitlab.com/skyhuborg/trackerdb v0.0.0-20200524222958-f6a6ca270848 h1:sbJjQtAQdGTEROMANb2gsFs2IQpZ3g25mAQ7GNwx2wE=
@@ -242,6 +248,8 @@ golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd/go.mod h1:h1NjWce9XRLGQEsW7w
 golang.org/x/sys v0.0.0-20200810151505-1b9f1253b3ed/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20200909081042-eff7692f9009 h1:W0lCpv29Hv0UaM1LXb9QlBHLNP8UFfcKjblhVCWftOM=
 golang.org/x/sys v0.0.0-20200909081042-eff7692f9009/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20200915084602-288bc346aa39 h1:356XA7ITklAU2//sYkjFeco+dH1bCRD8XCJ9FIEsvo4=
+golang.org/x/sys v0.0.0-20200915084602-288bc346aa39/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/text v0.3.2 h1:tW2bmiBqwgJj/UpqtC8EpXEZVYOwU0yG4iWbprSVAcs=
 golang.org/x/text v0.3.2/go.mod h1:bEr9sfX3Q8Zfm5fL9x+3itogRgK3+ptLWKqgva+5dAk=
@@ -269,6 +277,9 @@ google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013/go.mod h1:NbSheEEY
 google.golang.org/genproto v0.0.0-20200808173500-a06252235341/go.mod h1:FWY/as6DDZQgahTzZj3fqbO1CbirC29ZNUFHwi0/+no=
 google.golang.org/genproto v0.0.0-20200911024640-645f7a48b24f h1:Yv4xsIx7HZOoyUGSJ2ksDyWE2qIBXROsZKt2ny3hCGM=
 google.golang.org/genproto v0.0.0-20200911024640-645f7a48b24f/go.mod h1:FWY/as6DDZQgahTzZj3fqbO1CbirC29ZNUFHwi0/+no=
+google.golang.org/genproto v0.0.0-20200914193844-75d14daec038/go.mod h1:FWY/as6DDZQgahTzZj3fqbO1CbirC29ZNUFHwi0/+no=
+google.golang.org/genproto v0.0.0-20200915202801-9f80d0600517 h1:0V7smU6X2ZVOs8VxtifQqdIMZh6PXWCWztXGdKRE3OI=
+google.golang.org/genproto v0.0.0-20200915202801-9f80d0600517/go.mod h1:FWY/as6DDZQgahTzZj3fqbO1CbirC29ZNUFHwi0/+no=
 google.golang.org/grpc v1.19.0/go.mod h1:mqu4LbDTu4XGKhr4mRzUsmM4RtVoemTSY81AxZiDr8c=
 google.golang.org/grpc v1.23.0/go.mod h1:Y5yQAOtifL1yxbo5wqy6BxZv8vAUGQwXBOALyacEbxg=
 google.golang.org/grpc v1.25.1/go.mod h1:c3i+UQWmh7LiEpx4sFZnkU36qjEYZ0imhYfXVyQciAY=

@@ -371,7 +371,8 @@ func (s *Server) GetVideoEvents(ctx context.Context, in *pb.GetVideoEventsReq) (
 		base = filepath.Base(e.Thumbnail)
 		// thumb := fmt.Sprintf("http://localhost:3000/thumbnail/%s", base)
 		thumb := base
-		r.Video = append(r.Video, &pb.VideoEvent{EventId: e.EventId, CreatedAt: ts, Uri: uri, Thumb: thumb})
+		web_uri := filepath.Base(e.WebUri)
+		r.Video = append(r.Video, &pb.VideoEvent{EventId: e.EventId, CreatedAt: ts, Uri: uri, Thumb: thumb, WebUri: web_uri})
 	}
 
 	f_total := float64(total)
