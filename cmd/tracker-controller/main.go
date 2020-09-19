@@ -51,6 +51,11 @@ type Environment struct {
 	StaticDataPath string
 	StaticDataPort int
 	DbPath         string
+	DbHost         string
+	DbPort         string
+	DbUser         string
+	DbPassword     string
+	DbDatabase     string
 	ConfigFile     string
 	PipeFilePath   string
 }
@@ -70,6 +75,7 @@ func main() {
 	grpcServer.TlsCert = env.GrpcTlsCert
 	grpcServer.TlsKey = env.GrpcTlsKey
 	grpcServer.ConfigFile = env.ConfigFile
+	env.DbPath = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", env.DbUser, env.DbPassword, env.DbHost, env.DbPort, env.DbDatabase)
 	grpcServer.DbPath = env.DbPath
 	grpcServer.StaticDataPath = env.StaticDataPath
 	grpcServer.StaticDataPort = env.StaticDataPort
@@ -104,6 +110,11 @@ func parseConfig() {
 	paramStaticDataPort := "static-file-port"
 	paramConfigFile := "config-file"
 	paramDbPath := "db-path"
+	paramDbHost := "db-host"
+	paramDbPort := "db-port"
+	paramDbUser := "db-user"
+	paramDbPassword := "db-password"
+	paramDbDatabase := "db-database"
 	paramPipePath := "pipe-path"
 
 	/// Pull environment variables
@@ -118,6 +129,11 @@ func parseConfig() {
 	envStaticDataPort := os.Getenv(paramHttpPort)
 
 	envDbPath := os.Getenv(paramDbPath)
+	envDbHost := os.Getenv(paramDbHost)
+	envDbPort := os.Getenv(paramDbPort)
+	envDbUser := os.Getenv(paramDbUser)
+	envDbPassword := os.Getenv(paramDbPassword)
+	envDbDatabase := os.Getenv(paramDbDatabase)
 	envPipePath := os.Getenv(paramPipePath)
 	envConfigFile := os.Getenv(paramConfigFile)
 
@@ -132,6 +148,12 @@ func parseConfig() {
 	flag.StringVar(&env.StaticDataPath, paramStaticDataPath, "/skyhub/data/", "Path to the data folder")
 	flag.IntVar(&env.StaticDataPort, paramStaticDataPort, 3000, "Port for the data folder http server")
 	flag.StringVar(&env.DbPath, paramDbPath, "/skyhub/db/tracker.db", "Path to sqlite db")
+	flag.StringVar(&env.DbHost, paramDbHost, "skyhub-mysql", "database host")
+	flag.StringVar(&env.DbPort, paramDbPort, "3306", "database network port")
+	flag.StringVar(&env.DbUser, paramDbUser, "skyhub", "database username to connect with")
+	flag.StringVar(&env.DbPassword, paramDbPassword, "", "database password")
+	flag.StringVar(&env.DbDatabase, paramDbDatabase, "skyhub", "database to connect to on the database host")
+
 	flag.StringVar(&env.PipeFilePath, paramPipePath, "/tmp/skyhub.pipe", "Path to named pipe file")
 	flag.StringVar(&env.ConfigFile, paramConfigFile, "/skyhub/etc/tracker.yml", "path to config file")
 
@@ -176,6 +198,26 @@ func parseConfig() {
 	}
 	if len(envDbPath) > 0 {
 		env.DbPath = envDbPath
+	}
+
+	if len(envDbHost) > 0 {
+		env.DbHost = envDbHost
+	}
+
+	if len(envDbPort) > 0 {
+		env.DbPort = envDbPort
+	}
+
+	if len(envDbUser) > 0 {
+		env.DbUser = envDbUser
+	}
+
+	if len(envDbPassword) > 0 {
+		env.DbPassword = envDbPassword
+	}
+
+	if len(envDbDatabase) > 0 {
+		env.DbDatabase = envDbDatabase
 	}
 
 	if len(envPipePath) > 0 {
