@@ -4,7 +4,6 @@ go 1.14
 
 require (
 	github.com/Microsoft/go-winio v0.4.14 // indirect
-	github.com/Pallinder/go-randomdata v1.2.0
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/docker/distribution v2.7.1+incompatible // indirect
@@ -25,9 +24,7 @@ require (
 	gitlab.com/skyhuborg/proto-tracker-controller-go v1.2.0
 	gitlab.com/skyhuborg/proto-trackerd-go v1.1.2
 	gitlab.com/skyhuborg/tracker v0.0.0-20200918234836-67d40686db98
-	gitlab.com/skyhuborg/trackerdb v0.0.0-20200905195139-b821c66684de // indirect
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208 // indirect
 	google.golang.org/grpc v1.32.0
-	gopkg.in/yaml.v2 v2.3.0
 )
