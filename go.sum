@@ -176,7 +176,12 @@ gitlab.com/skyhuborg/tracker v0.0.0-20200818222324-2c0d8558ed29 h1:cOzRzBjxhrMkI
 gitlab.com/skyhuborg/tracker v0.0.0-20200818222324-2c0d8558ed29/go.mod h1:nPcH3TGqbH/L5ixn3g+6ajSnq6bHI1HhUziQly9m0fg=
 gitlab.com/skyhuborg/tracker v0.0.0-20200918234836-67d40686db98 h1:T9CcjitGCzMulBUDlNCvaMga1BWlcnUV30ks9IV4W30=
 gitlab.com/skyhuborg/tracker v0.0.0-20200918234836-67d40686db98/go.mod h1:lTMTLdwlhHM5vRlGjruT5b4dPLCo0+H+KCmD9IdFxEk=
+gitlab.com/skyhuborg/tracker v0.0.0-20200919025143-36cdefa777e6 h1:Tdr096Pi+hm7SidH9Nva3RHv4iT+TecpKJb31fnJHxo=
+gitlab.com/skyhuborg/tracker v0.0.0-20200919025143-36cdefa777e6/go.mod h1:lTMTLdwlhHM5vRlGjruT5b4dPLCo0+H+KCmD9IdFxEk=
+gitlab.com/skyhuborg/tracker v0.0.0-20200921005616-3de66f503616 h1:SHrKi7wkQCV7SGwepqGEE0E6KdQS0F3p3/bBWzgsEsE=
+gitlab.com/skyhuborg/tracker v0.0.0-20200921005616-3de66f503616/go.mod h1:4lvedpjD5E2gv2Ls6W8f6rtRoVV+Jr/zV3jLgwpRg3U=
 gitlab.com/skyhuborg/trackerd v0.0.0-20200918213454-1f87af26ec28/go.mod h1:SS4BBYDzBXphZ0XD0RabIVd4XZtrF06nqWfivStwoK8=
+gitlab.com/skyhuborg/trackerd v0.0.0-20200919133145-0e85e858c66b/go.mod h1:SS4BBYDzBXphZ0XD0RabIVd4XZtrF06nqWfivStwoK8=
 gitlab.com/skyhuborg/trackerdb v0.0.0-20200524222958-f6a6ca270848 h1:sbJjQtAQdGTEROMANb2gsFs2IQpZ3g25mAQ7GNwx2wE=
 gitlab.com/skyhuborg/trackerdb v0.0.0-20200524222958-f6a6ca270848/go.mod h1:Xghyf1PlqB43ZOGnw/4qs8wfpK3sSTIVX70rn2TGRAE=
 go.bug.st/serial v1.1.0/go.mod h1:rpXPISGjuNjPTRTcMlxi9lN6LoIPxd1ixVjBd8aSk/Q=
