@@ -52,19 +52,20 @@ import (
 )
 
 type Server struct {
-	Handle         *grpc.Server
-	HandleTrackerd *grpc.Server
-	ListenPort     int
-	EnableTls      bool
-	TlsKey         string
-	TlsCert        string
-	ConfigFile     string
-	DbPath         string
-	StaticDataPath string
-	PipeFilePath   string
-	StaticDataPort int
-	AuthTokens     []Auth
-	SensorReport   pbtd.SensorReport
+	Handle          *grpc.Server
+	HandleTrackerd  *grpc.Server
+	ListenPort      int
+	EnableTls       bool
+	TlsKey          string
+	TlsCert         string
+	ConfigFile      string
+	DbConnectString string
+	DbDriver        string
+	StaticDataPath  string
+	PipeFilePath    string
+	StaticDataPort  int
+	AuthTokens      []Auth
+	SensorReport    pbtd.SensorReport
 
 	config config.Config
 	db     db.DB
@@ -89,7 +90,7 @@ func (s *Server) OpenConfig() (err error) {
 func (s *Server) ConnectDb() error {
 	db := db.DB{}
 
-	err := db.Open(s.DbPath)
+	err := db.Open(s.DbDriver, s.DbConnectString)
 
 	if err != nil {
 		grpclog.Printf("Error: %s\n")

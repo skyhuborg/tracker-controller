@@ -15,11 +15,8 @@
             "env": {
                 "data-path":"${workspaceFolder}/data",
                 "grpc-listen-port": "9090",
-                "db-path": "${workspaceFolder}/data/tracker.db",
-                "db-host": "localhost",
-                "db-user": "root",
-                "db-database": "skyhub_tracker",
-                "db-password": "byMp3nTXpaKeB7Vz",
+                "db-driver": "mysql",
+                "db-connect-string": "root:byMp3nTXpaKeB7Vz@tcp(localhost:3306)/skyhub_tracker?charset=utf8mb4&parseTime=True&loc=Local",
                 "config-file": "${workspaceFolder}/data/etc/tracker.yml",
                 "pipe-path": "${workspaceFolder}/data/skyhub.pipe",
                 // "video-device": "0",

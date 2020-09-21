@@ -41,23 +41,19 @@ import (
 )
 
 type Environment struct {
-	GrpcListenPort int
-	GrpcEnableTls  bool
-	GrpcTlsKey     string
-	GrpcTlsCert    string
-	HttpEnabled    bool
-	HttpPath       string
-	HttpPort       int
-	StaticDataPath string
-	StaticDataPort int
-	DbPath         string
-	DbHost         string
-	DbPort         string
-	DbUser         string
-	DbPassword     string
-	DbDatabase     string
-	ConfigFile     string
-	PipeFilePath   string
+	GrpcListenPort  int
+	GrpcEnableTls   bool
+	GrpcTlsKey      string
+	GrpcTlsCert     string
+	HttpEnabled     bool
+	HttpPath        string
+	HttpPort        int
+	StaticDataPath  string
+	StaticDataPort  int
+	DbConnectString string
+	DbDriver        string
+	ConfigFile      string
+	PipeFilePath    string
 }
 
 var env Environment
@@ -75,8 +71,8 @@ func main() {
 	grpcServer.TlsCert = env.GrpcTlsCert
 	grpcServer.TlsKey = env.GrpcTlsKey
 	grpcServer.ConfigFile = env.ConfigFile
-	env.DbPath = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", env.DbUser, env.DbPassword, env.DbHost, env.DbPort, env.DbDatabase)
-	grpcServer.DbPath = env.DbPath
+	grpcServer.DbDriver = env.DbDriver
+	grpcServer.DbConnectString = env.DbConnectString
 	grpcServer.StaticDataPath = env.StaticDataPath
 	grpcServer.StaticDataPort = env.StaticDataPort
 	grpcServer.PipeFilePath = env.PipeFilePath
@@ -109,12 +105,8 @@ func parseConfig() {
 	paramStaticDataPath := "static-file-path"
 	paramStaticDataPort := "static-file-port"
 	paramConfigFile := "config-file"
-	paramDbPath := "db-path"
-	paramDbHost := "db-host"
-	paramDbPort := "db-port"
-	paramDbUser := "db-user"
-	paramDbPassword := "db-password"
-	paramDbDatabase := "db-database"
+	paramDbConnectString := "db-connect-string"
+	paramDbDriver := "db-driver"
 	paramPipePath := "pipe-path"
 
 	/// Pull environment variables
@@ -128,12 +120,8 @@ func parseConfig() {
 	envStaticDataPath := os.Getenv(paramHttpPath)
 	envStaticDataPort := os.Getenv(paramHttpPort)
 
-	envDbPath := os.Getenv(paramDbPath)
-	envDbHost := os.Getenv(paramDbHost)
-	envDbPort := os.Getenv(paramDbPort)
-	envDbUser := os.Getenv(paramDbUser)
-	envDbPassword := os.Getenv(paramDbPassword)
-	envDbDatabase := os.Getenv(paramDbDatabase)
+	envDbConnectString := os.Getenv(paramDbConnectString)
+	envDbDriver := os.Getenv(paramDbDriver)
 	envPipePath := os.Getenv(paramPipePath)
 	envConfigFile := os.Getenv(paramConfigFile)
 
@@ -147,12 +135,8 @@ func parseConfig() {
 
 	flag.StringVar(&env.StaticDataPath, paramStaticDataPath, "/skyhub/data/", "Path to the data folder")
 	flag.IntVar(&env.StaticDataPort, paramStaticDataPort, 3000, "Port for the data folder http server")
-	flag.StringVar(&env.DbPath, paramDbPath, "/skyhub/db/tracker.db", "Path to sqlite db")
-	flag.StringVar(&env.DbHost, paramDbHost, "skyhub-mysql", "database host")
-	flag.StringVar(&env.DbPort, paramDbPort, "3306", "database network port")
-	flag.StringVar(&env.DbUser, paramDbUser, "skyhub", "database username to connect with")
-	flag.StringVar(&env.DbPassword, paramDbPassword, "", "database password")
-	flag.StringVar(&env.DbDatabase, paramDbDatabase, "skyhub", "database to connect to on the database host")
+	flag.StringVar(&env.DbConnectString, paramDbConnectString, "skyhub:@tcp(localhost:3306)/skyhub?charset=utf8mb4&parseTime=True&loc=Local", "Connect string for the database")
+	flag.StringVar(&env.DbDriver, paramDbDriver, "mysql", "Gorm db driver to use")
 
 	flag.StringVar(&env.PipeFilePath, paramPipePath, "/tmp/skyhub.pipe", "Path to named pipe file")
 	flag.StringVar(&env.ConfigFile, paramConfigFile, "/skyhub/etc/tracker.yml", "path to config file")
@@ -196,28 +180,12 @@ func parseConfig() {
 			env.StaticDataPort = int(tempStaticDataPort)
 		}
 	}
-	if len(envDbPath) > 0 {
-		env.DbPath = envDbPath
+	if len(envDbConnectString) > 0 {
+		env.DbConnectString = envDbConnectString
 	}
 
-	if len(envDbHost) > 0 {
-		env.DbHost = envDbHost
-	}
-
-	if len(envDbPort) > 0 {
-		env.DbPort = envDbPort
-	}
-
-	if len(envDbUser) > 0 {
-		env.DbUser = envDbUser
-	}
-
-	if len(envDbPassword) > 0 {
-		env.DbPassword = envDbPassword
-	}
-
-	if len(envDbDatabase) > 0 {
-		env.DbDatabase = envDbDatabase
+	if len(envDbDriver) > 0 {
+		env.DbDriver = envDbDriver
 	}
 
 	if len(envPipePath) > 0 {
