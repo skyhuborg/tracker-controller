@@ -15,9 +15,10 @@
             "env": {
                 "data-path":"${workspaceFolder}/data",
                 "grpc-listen-port": "9090",
-                "db-driver": "mysql",
-                "db-connect-string": "root:byMp3nTXpaKeB7Vz@tcp(localhost:3306)/skyhub_tracker?charset=utf8mb4&parseTime=True&loc=Local",
-                "config-file": "${workspaceFolder}/data/etc/tracker.yml",
+                // "db-driver": "mysql",
+                // "db-connect-string": "root:byMp3nTXpaKeB7Vz@tcp(localhost:3306)/skyhub_tracker?charset=utf8mb4&parseTime=True&loc=Local",
+                "db-driver": "sqlite3",
+                "db-connect-string": "${workspaceFolder}/data/tracker.db",                "config-file": "${workspaceFolder}/data/etc/tracker.yml",
                 "pipe-path": "${workspaceFolder}/data/skyhub.pipe",
                 // "video-device": "0",
                 "upload-server-addr": "localhost:8089",
