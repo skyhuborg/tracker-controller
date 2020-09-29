@@ -306,10 +306,23 @@ func (s *Server) GetSensorReport(ctx context.Context, in *pb.SensorReportReq) (*
 	r.Tracker = &pb.TrackerInfo{}
 	if &s.SensorReport != nil {
 		grpclog.Println(s.SensorReport)
-		r.LonLat.Lat = s.SensorReport.GPS_TPVReport.Lat
-		r.LonLat.Lon = s.SensorReport.GPS_TPVReport.Lon
-		r.Tracker.Uuid = s.SensorReport.Tracker.Uuid
-		r.Tracker.Hostname = s.SensorReport.Tracker.Hostname
+		if s.SensorReport.GPS_TPVReport != nil {
+			r.LonLat.Lat = s.SensorReport.GPS_TPVReport.Lat
+			r.LonLat.Lon = s.SensorReport.GPS_TPVReport.Lon
+		} else {
+			r.LonLat.Lat = 0
+			r.LonLat.Lon = 0
+		}
+		if s.SensorReport.Tracker != nil {
+			r.Tracker.Uuid = s.SensorReport.Tracker.Uuid
+			r.Tracker.Hostname = s.SensorReport.Tracker.Hostname
+			r.Tracker.Time = s.SensorReport.Tracker.Time
+		} else {
+			r.Tracker.Uuid = ""
+			r.Tracker.Hostname = ""
+			r.Tracker.Time = nil
+		}
+
 	}
 	return r, nil
 }
