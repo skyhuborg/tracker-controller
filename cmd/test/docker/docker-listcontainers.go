@@ -88,7 +88,7 @@ func ListContainers() {
 	}
 
 	for _, container := range containers {
-		fmt.Printf("%s %s\n", container.ID[:10], container.Image)
+		fmt.Printf("%s %s %s\n", container.ID[:10], container.Names, container.Image)
 	}
 }
 

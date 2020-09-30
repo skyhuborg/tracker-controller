@@ -290,14 +290,51 @@ func (s *Server) Register(ctx context.Context, in *pbtd.TrackerInfo) (*pbtd.Regi
 }
 
 func (s *Server) GetSensorReport(ctx context.Context, in *pb.SensorReportReq) (*pb.SensorReport, error) {
-	grpclog.Printf("GetSensorReportCalled")
-	r := pb.SensorReport{}
+	grpclog.Printf("GetSensorReport Called")
+	// sensors, total, err := s.db.GetSensors(1)
+
+	// if err != nil {
+
+	// }
+
+	// report := &pb.SensorReport{}
+	// if total > 0 {
+	// 	proto.Unmarshal(sensors[0], report)
+	// }
+	r := &pb.SensorReport{}
 	r.LonLat = &pb.LonLat{}
 	r.Tracker = &pb.TrackerInfo{}
-	grpclog.Println(s.SensorReport)
-	r.LonLat.Lat = s.SensorReport.GPS_TPVReport.Lat
-	r.LonLat.Lon = s.SensorReport.GPS_TPVReport.Lon
-	r.Tracker.Uuid = s.SensorReport.Tracker.Uuid
+	if &s.SensorReport != nil {
+		grpclog.Println(s.SensorReport)
+		if s.SensorReport.GPS_TPVReport != nil {
+			r.LonLat.Lat = s.SensorReport.GPS_TPVReport.Lat
+			r.LonLat.Lon = s.SensorReport.GPS_TPVReport.Lon
+		} else {
+			r.LonLat.Lat = 0
+			r.LonLat.Lon = 0
+		}
+		if s.SensorReport.Tracker != nil {
+			r.Tracker.Uuid = s.SensorReport.Tracker.Uuid
+			r.Tracker.Hostname = s.SensorReport.Tracker.Hostname
+			r.Tracker.Time = s.SensorReport.Tracker.Time
+		} else {
+			r.Tracker.Uuid = ""
+			r.Tracker.Hostname = ""
+			r.Tracker.Time = nil
+		}
+
+	}
+	return r, nil
+}
+
+func (s *Server) GetSensorReports(ctx context.Context, in *pb.GetSensorReportsReq) (*pb.GetSensorReportsResp, error) {
+	grpclog.Printf("GetSensorReports Called")
+	r := pb.GetSensorReportsResp{}
+	return &r, nil
+}
+
+func (s *Server) GetContainerList(ctx context.Context, in *pb.GetContainerListReq) (*pb.GetContainerListResp, error) {
+	r := pb.GetContainerListResp{}
 	return &r, nil
 }
 
