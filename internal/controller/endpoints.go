@@ -337,7 +337,7 @@ func (s *Server) GetContainerList(ctx context.Context, in *pb.GetContainerListRe
 	r := pb.GetContainerListResp{}
 
 	// r.Video = append(r.Video, &pb.VideoEvent{EventId: e.EventId, CreatedAt: ts, Uri: uri, Thumb: thumb, WebUri: web_uri})
-	var containers = s.ListContainers()
+	var containers = s.listContainers()
 	for _, c := range containers {
 		var cont = &pb.Container{}
 		cont.Id = c.Id
@@ -352,7 +352,7 @@ func (s *Server) GetContainerList(ctx context.Context, in *pb.GetContainerListRe
 
 func (s *Server) GetContainerLog(ctx context.Context, in *pb.GetContainerLogReq) (*pb.GetContainerLogResp, error) {
 	r := pb.GetContainerLogResp{}
-	var logs = s.ContainerLog(in.Containerid)
+	var logs = s.getContainerLog(in.Containerid)
 	r.Log = logs
 	//r.Containers = s.ListContainers()
 	return &r, nil
