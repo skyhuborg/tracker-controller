@@ -335,6 +335,26 @@ func (s *Server) GetSensorReports(ctx context.Context, in *pb.GetSensorReportsRe
 
 func (s *Server) GetContainerList(ctx context.Context, in *pb.GetContainerListReq) (*pb.GetContainerListResp, error) {
 	r := pb.GetContainerListResp{}
+
+	// r.Video = append(r.Video, &pb.VideoEvent{EventId: e.EventId, CreatedAt: ts, Uri: uri, Thumb: thumb, WebUri: web_uri})
+	var containers = s.ListContainers()
+	for _, c := range containers {
+		var cont = &pb.Container{}
+		cont.Id = c.Id
+		cont.Name = c.Name
+		cont.Status = c.Status
+		cont.Image = c.Image
+		r.Containers = append(r.Containers, cont)
+	}
+	//r.Containers = s.ListContainers()
+	return &r, nil
+}
+
+func (s *Server) GetContainerLog(ctx context.Context, in *pb.GetContainerLogReq) (*pb.GetContainerLogResp, error) {
+	r := pb.GetContainerLogResp{}
+	var logs = s.ContainerLog(in.Containerid)
+	r.Log = logs
+	//r.Containers = s.ListContainers()
 	return &r, nil
 }
 
