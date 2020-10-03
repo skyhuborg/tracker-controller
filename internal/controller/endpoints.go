@@ -32,6 +32,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"net"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -42,28 +43,32 @@ import (
 	guuid "github.com/google/uuid"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	pb "gitlab.com/skyhuborg/proto-tracker-controller-go"
-	"gitlab.com/skyhuborg/tracker-controller/internal/common"
-	"gitlab.com/skyhuborg/trackerdb"
+	pbtd "gitlab.com/skyhuborg/proto-trackerd-go"
+	"gitlab.com/skyhuborg/tracker/pkg/config"
+	"gitlab.com/skyhuborg/tracker/pkg/db"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
 )
 
 type Server struct {
-	Handle         *grpc.Server
-	ListenPort     int
-	EnableTls      bool
-	TlsKey         string
-	TlsCert        string
-	ConfigFile     string
-	DbPath         string
-	StaticDataPath string
-	PipeFilePath   string
-	StaticDataPort int
-	AuthTokens     []Auth
+	Handle          *grpc.Server
+	HandleTrackerd  *grpc.Server
+	ListenPort      int
+	EnableTls       bool
+	TlsKey          string
+	TlsCert         string
+	ConfigFile      string
+	DbConnectString string
+	DbDriver        string
+	StaticDataPath  string
+	PipeFilePath    string
+	StaticDataPort  int
+	AuthTokens      []Auth
+	SensorReport    pbtd.SensorReport
 
-	config common.Config
-	db     trackerdb.DB
+	config config.Config
+	db     db.DB
 }
 
 type Auth struct {
@@ -83,9 +88,9 @@ func (s *Server) OpenConfig() (err error) {
 }
 
 func (s *Server) ConnectDb() error {
-	db := trackerdb.DB{}
+	db := db.DB{}
 
-	err := db.Open(s.DbPath)
+	err := db.Open(s.DbDriver, s.DbConnectString)
 
 	if err != nil {
 		grpclog.Printf("Error: %s\n")
@@ -135,8 +140,10 @@ func (s *Server) Start() {
 	go s.StartFileServer()
 
 	s.Handle = grpc.NewServer()
+	s.HandleTrackerd = grpc.NewServer()
 
 	pb.RegisterControllerServer(s.Handle, s)
+	pbtd.RegisterTrackerdServer(s.HandleTrackerd, s)
 
 	grpclog.SetLogger(log.New(os.Stdout, "tracker-controller: ", log.LstdFlags))
 
@@ -154,11 +161,45 @@ func (s *Server) Start() {
 		Handler: http.HandlerFunc(handler),
 	}
 
+	port := 8089
+	grpclog.Printf("Starting sensor relay server port %d", port)
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	if err != nil {
+		grpclog.Fatalf("failed to listen: %v", err)
+	}
+	go s.HandleTrackerd.Serve(lis)
+
 	grpclog.Printf("Starting server without TLS on port %d", s.ListenPort)
 	if err := httpServer.ListenAndServe(); err != nil {
 		grpclog.Fatalf("failed starting http server: %v", err)
 	}
+
 }
+
+// func (s *Server) TrackerStatusStream(
+// 	request *pb_hmi.DflyStatusRequest,
+// 	stream pb_hmi.Dfly_DflyStatusStreamServer) error {
+
+// 	done := make(chan bool)
+
+// 	go func() {
+// 		for {
+// 			reply, valid := s.status_q.Pop(true)
+// 			if !valid {
+// 				return
+// 			}
+
+// 			err := stream.SendMsg(reply)
+// 			if err != nil {
+// 				done <- true
+// 				return
+// 			}
+// 		}
+// 	}()
+
+// 	<-done
+// 	return nil
+// }
 
 func (s *Server) SetConfig(ctx context.Context, in *pb.SetConfigReq) (*pb.SetConfigResp, error) {
 	r := pb.SetConfigResp{}
@@ -232,6 +273,77 @@ func (s *Server) Login(ctx context.Context, in *pb.LoginReq) (*pb.LoginResp, err
 	return &resp, nil
 }
 
+func (s *Server) AddSensor(ctx context.Context, in *pbtd.SensorReport) (*pbtd.SensorReportResponse, error) {
+	grpclog.Printf("Report received\n")
+	s.SensorReport = *in
+	return &pbtd.SensorReportResponse{}, nil
+}
+
+func (s *Server) AddEvent(ctx context.Context, in *pbtd.Event) (*pbtd.EventResponse, error) {
+	return &pbtd.EventResponse{}, nil
+}
+func (s *Server) AddVideoEvent(ctx context.Context, in *pbtd.VideoEvent) (*pbtd.VideoEventResponse, error) {
+	return &pbtd.VideoEventResponse{}, nil
+}
+func (s *Server) Register(ctx context.Context, in *pbtd.TrackerInfo) (*pbtd.RegisterResponse, error) {
+	return &pbtd.RegisterResponse{}, nil
+}
+
+func (s *Server) GetSensorReport(ctx context.Context, in *pb.SensorReportReq) (*pb.SensorReport, error) {
+	grpclog.Printf("GetSensorReport Called")
+	// sensors, total, err := s.db.GetSensors(1)
+
+	// if err != nil {
+
+	// }
+
+	// report := &pb.SensorReport{}
+	// if total > 0 {
+	// 	proto.Unmarshal(sensors[0], report)
+	// }
+	r := &pb.SensorReport{}
+	r.LonLat = &pb.LonLat{}
+	r.Tracker = &pb.TrackerInfo{}
+	if &s.SensorReport != nil {
+		grpclog.Println(s.SensorReport)
+		if s.SensorReport.GPS_TPVReport != nil {
+			r.LonLat.Lat = s.SensorReport.GPS_TPVReport.Lat
+			r.LonLat.Lon = s.SensorReport.GPS_TPVReport.Lon
+		} else {
+			r.LonLat.Lat = 0
+			r.LonLat.Lon = 0
+		}
+		if s.SensorReport.Tracker != nil {
+			r.Tracker.Uuid = s.SensorReport.Tracker.Uuid
+			r.Tracker.Hostname = s.SensorReport.Tracker.Hostname
+			r.Tracker.Time = s.SensorReport.Tracker.Time
+		} else {
+			r.Tracker.Uuid = ""
+			r.Tracker.Hostname = ""
+			r.Tracker.Time = nil
+		}
+
+	}
+	return r, nil
+}
+
+func (s *Server) GetSensorReports(ctx context.Context, in *pb.GetSensorReportsReq) (*pb.GetSensorReportsResp, error) {
+	grpclog.Printf("GetSensorReports Called")
+	r := pb.GetSensorReportsResp{}
+	return &r, nil
+}
+
+func (s *Server) GetContainerList(ctx context.Context, in *pb.GetContainerListReq) (*pb.GetContainerListResp, error) {
+	r := pb.GetContainerListResp{}
+	return &r, nil
+}
+
+// func (s *Server) GetStatusReport(ctx context.Context, in *pb.GetStatusReportReq) (*pb.GetStatusReportResp, error) {
+// 	grpclog.Printf("GetStatusReportCalled")
+// 	r := pb.GetStatusReportResp{}
+// 	return &r, nil
+// }
+
 func (s *Server) GetIsConfigured(ctx context.Context, in *pb.GetIsConfiguredReq) (*pb.GetIsConfiguredResp, error) {
 	r := pb.GetIsConfiguredResp{}
 
@@ -297,7 +409,8 @@ func (s *Server) GetVideoEvents(ctx context.Context, in *pb.GetVideoEventsReq) (
 		base = filepath.Base(e.Thumbnail)
 		// thumb := fmt.Sprintf("http://localhost:3000/thumbnail/%s", base)
 		thumb := base
-		r.Video = append(r.Video, &pb.VideoEvent{EventId: e.EventId, CreatedAt: ts, Uri: uri, Thumb: thumb})
+		web_uri := filepath.Base(e.WebUri)
+		r.Video = append(r.Video, &pb.VideoEvent{EventId: e.EventId, CreatedAt: ts, Uri: uri, Thumb: thumb, WebUri: web_uri})
 	}
 
 	f_total := float64(total)

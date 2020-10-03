@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+    
 
         {
             "name": "Launch Tracker Controller",
@@ -14,12 +15,14 @@
             "env": {
                 "data-path":"${workspaceFolder}/data",
                 "grpc-listen-port": "9090",
-                "db-path": "${workspaceFolder}/data/tracker.db",
-                "config-file": "${workspaceFolder}/data/etc/tracker.yml",
+                // "db-driver": "mysql",
+                // "db-connect-string": "root:byMp3nTXpaKeB7Vz@tcp(localhost:3306)/skyhub_tracker?charset=utf8mb4&parseTime=True&loc=Local",
+                "db-driver": "sqlite3",
+                "db-connect-string": "${workspaceFolder}/data/tracker.db",                "config-file": "${workspaceFolder}/data/etc/tracker.yml",
                 "pipe-path": "${workspaceFolder}/data/skyhub.pipe",
                 // "video-device": "0",
-                "upload-server-addr": "trackerd-dev.skyhub.org:443",
-                "trackerd-server-addr": "trackerapi-dev.skyhub.org:443",
+                "upload-server-addr": "localhost:8089",
+                "trackerd-server-addr": "localhost:8088",
                 // "profile": "1"
                 "show-window": "1",
                 // "disable-recorder": "1"
